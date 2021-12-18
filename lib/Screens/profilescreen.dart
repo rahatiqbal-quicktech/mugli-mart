@@ -19,7 +19,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     Size size = MediaQuery.of(context).size / 100;
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
-      appBar: myappbar(context, size, Colors.white),
+      appBar: myappbar(context, size, Colors.grey.shade100),
       bottomNavigationBar: const TheBottomNavBar(),
       body: SingleChildScrollView(
         child: Column(
@@ -51,15 +51,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             whitespace(context, 3, 0),
             profilebuttons(size, Ionicons.create_outline, "Edit Profile",
-                'UnderConstructionScreen'),
+                'EditProfileScreen'),
             profilebuttons(size, Ionicons.cart_outline, "My Orders",
                 'UnderConstructionScreen'),
             profilebuttons(size, Ionicons.gift_outline, "My Points",
                 'UnderConstructionScreen'),
             profilebuttons(size, Ionicons.boat_outline, "Shipping Address",
-                'UnderConstructionScreen'),
+                'ShippingAdressScreen'),
             profilebuttons(size, Ionicons.magnet_outline, "Track Order",
-                'UnderConstructionScreen'),
+                'TrackOrderScreen'),
             whitespace(context, 3, 0),
             profilebuttons(size, Ionicons.log_out_outline, "Logout",
                 'UnderConstructionScreen'),

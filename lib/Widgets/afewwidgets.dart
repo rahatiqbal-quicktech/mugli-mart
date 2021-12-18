@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:muglimart_quicktech/Utilities/colors.dart';
 
@@ -150,6 +151,13 @@ AppBar myappbar(BuildContext context, var size, Color backgroundcolor) {
         textStyle:
             const TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
       ),
+    ),
+    leading: GestureDetector(
+      child: Icon(
+        Icons.arrow_back,
+        color: Colors.black,
+      ),
+      onTap: () => Navigator.pop(context),
     ),
     backgroundColor: backgroundcolor,
     elevation: 0.55,

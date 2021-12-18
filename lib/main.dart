@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:muglimart_quicktech/Models/product.dart';
+import 'package:muglimart_quicktech/Screens/TrackOrderScreen.dart';
 import 'package:muglimart_quicktech/Screens/campaignsscreen.dart';
 import 'package:muglimart_quicktech/Screens/cartscreen.dart';
+import 'package:muglimart_quicktech/Screens/changeadressscreen.dart';
+import 'package:muglimart_quicktech/Screens/edit%20profile%20screen/editprofilescreen.dart';
+import 'package:muglimart_quicktech/Screens/shippingaddressscreen.dart';
 import 'package:muglimart_quicktech/boilerplates/demo.dart';
 import 'package:muglimart_quicktech/Screens/homescreen.dart';
 import 'package:muglimart_quicktech/Screens/loginscreen.dart';
@@ -26,7 +30,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: 'HomeScreen',
+      initialRoute: 'ProfileScreen',
       routes: {
         'LoginScreen': (context) => const LoginScreen(),
         'SignUpScreen': (context) => const SignUpScreen(),
@@ -40,13 +44,17 @@ class MyApp extends StatelessWidget {
         'SearchScreen': (context) => const SearchScreen(),
         'Demo': (context) => const Demo(),
         'recommended_demo': (context) => recommended_demo(),
+        'EditProfileScreen': (context) => EditProfileScreen(),
+        'TrackOrderScreen': (context) => TrackOrderScreen(),
+        'ShippingAdressScreen': (context) => ShippingAdressScreen(),
+        'ChangeAddressScreen': (context) => ChangeAddressScreen(),
       },
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const HomeScreen(),
+      home: const ProfileScreen(),
     );
   }
 }
