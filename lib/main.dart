@@ -13,6 +13,7 @@ import 'package:muglimart_quicktech/Screens/searchscreen.dart';
 import 'package:muglimart_quicktech/Screens/signupscreen.dart';
 import 'package:muglimart_quicktech/Screens/underconstructionscreen.dart';
 import 'package:muglimart_quicktech/Screens/wishlistscreen.dart';
+import 'package:muglimart_quicktech/boilerplates/recommended_demo.dart';
 
 void main() async {
   await GetStorage.init();
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: 'SignUpScreen',
+      initialRoute: 'HomeScreen',
       routes: {
         'LoginScreen': (context) => const LoginScreen(),
         'SignUpScreen': (context) => const SignUpScreen(),
@@ -38,13 +39,14 @@ class MyApp extends StatelessWidget {
         'UnderConstructionScreen': (context) => const UnderConstructionScreen(),
         'SearchScreen': (context) => const SearchScreen(),
         'Demo': (context) => const Demo(),
+        'recommended_demo': (context) => recommended_demo(),
       },
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const SignUpScreen(),
+      home: const HomeScreen(),
     );
   }
 }

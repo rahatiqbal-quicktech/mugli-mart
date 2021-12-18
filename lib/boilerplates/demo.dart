@@ -28,14 +28,14 @@ class _DemoState extends State<Demo> {
 
   var getdata = CategoriesController();
 
-  getData() {
-    // CategoriesController().getcategories().then((value)
-    CampaignController().getcampaigns().then((value) {
-      setState(() {
-        report_ = value;
-      });
-    });
-  }
+  // getData() {
+  //   // CategoriesController().getcategories().then((value)
+  //   CampaignController().getcampaigns().then((value) {
+  //     setState(() {
+  //       report_ = value;
+  //     });
+  //   });
+  // }
 
   // getCampaigns() {
   //   CampaignController().getcampaigns().then((value) => {

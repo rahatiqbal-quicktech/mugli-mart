@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:muglimart_quicktech/Models/Categories.dart';
 import 'package:muglimart_quicktech/Models/Product.dart';
+import 'package:muglimart_quicktech/Models/RecommendedModel.dart';
 import 'package:muglimart_quicktech/Models/SliderModel.dart';
 import 'package:muglimart_quicktech/Utilities/colors.dart';
 import 'package:muglimart_quicktech/Widgets/afewwidgets.dart';
@@ -140,32 +141,46 @@ class _HomeScreenState extends State<HomeScreen> {
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       return SizedBox(
-                        height: size.height * 15,
+                        height: size.height * 20,
                         child: ListView.builder(
                             shrinkWrap: true,
                             scrollDirection: Axis.horizontal,
                             itemCount: snapshot.data!.categories!.length,
                             itemBuilder: (context, index) {
-                              return Container(
-                                height: size.height * 10,
-                                width: size.height * 15,
-                                margin: const EdgeInsets.all(3.5),
-                                decoration: const BoxDecoration(
-                                  // borderRadius: BorderRadius.circular(50),
-                                  shape: BoxShape.circle,
-                                  color: Colors.black,
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    snapshot.data!.categories![index].catname
-                                        .toString(),
-                                    // "TV & Home Appliances$index",
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                      color: Colors.white,
+                              return Column(
+                                children: [
+                                  Container(
+                                    height: size.height * 10,
+                                    width: size.height * 15,
+                                    margin: const EdgeInsets.all(3.5),
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                          image: NetworkImage(
+                                              "https://www.muglimart.com/" +
+                                                  snapshot.data!
+                                                      .categories![index].image
+                                                      .toString()),
+                                          fit: BoxFit.cover),
+                                      // borderRadius: BorderRadius.circular(50),
+                                      shape: BoxShape.circle,
+                                      // color: Colors.black,
                                     ),
                                   ),
-                                ),
+                                  Container(
+                                    width: size.width * 30,
+                                    child: Text(
+                                      snapshot.data!.categories![index].catname
+                                          .toString(),
+                                      softWrap: true,
+                                      // "TV & Home Appliances$index",
+                                      textAlign: TextAlign.center,
+                                      style: GoogleFonts.openSans(
+                                          textStyle: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                      )),
+                                    ),
+                                  ),
+                                ],
                               );
                             }),
                       );
@@ -248,6 +263,38 @@ class _HomeScreenState extends State<HomeScreen> {
               //       ),
               //       itemBuilder: (context, index) => anotheritemcard(size)),
               // ),
+              FutureBuilder<RecommendedModel>(
+                  future: getRecommended(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return SizedBox(
+                        height: size.height * 71,
+                        child: GridView.builder(
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              // mainAxisSpacing: 5,
+                              // crossAxisSpacing: 5,
+                              childAspectRatio: 0.77,
+                            ),
+                            itemCount: snapshot.data!.products!.data!.length,
+                            itemBuilder: (context, index) => anotheritemcard(
+                                size,
+                                "https://www.muglimart.com/" +
+                                    snapshot.data!.products!.data![index]
+                                        .proImage!.image
+                                        .toString(),
+                                snapshot
+                                    .data!.products!.data![index].productname
+                                    .toString(),
+                                snapshot.data!.products!.data![index]
+                                    .productnewprice
+                                    .toString())),
+                      );
+                    } else {
+                      return Text("Loading.....");
+                    }
+                  }),
             ],
           ),
         ),
@@ -333,38 +380,53 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Widget anotheritemcard(var size) {
-  //   return GestureDetector(
-  //     onTap: () => Navigator.pushNamed(context, 'ProductDetailsScreen'),
-  //     child: Padding(
-  //       padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-  //       child: Column(
-  //         crossAxisAlignment: CrossAxisAlignment.start,
-  //         children: <Widget>[
-  //           Container(
-  //             // padding: const EdgeInsets.all(3),
-  //             color: Colors.black38,
-  //             width: double.infinity,
-  //             height: size.height * 26,
-  //             child: Image.network(
-  //               url,
-  //               fit: BoxFit.cover,
-  //             ),
-  //           ),
-  //           whitespace(context, 2, 0),
-  //           const Text(
-  //             "Ash Sweatshirt",
-  //             style: TextStyle(
-  //               fontSize: 15,
-  //               fontWeight: FontWeight.w500,
-  //             ),
-  //           ),
-  //           const Text("/- 1500 tk"),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
+  Future<RecommendedModel> getRecommended() async {
+    final response = await http
+        .get(Uri.parse('https://muglimart.com/api/v1/category-products/1'));
+
+    var data = jsonDecode(response.body.toString());
+
+    if (response.statusCode == 200) {
+      return RecommendedModel.fromJson(data);
+    } else {
+      return RecommendedModel.fromJson(data);
+    }
+  }
+
+  Widget anotheritemcard(
+      var size, String url, String productname, String price) {
+    return GestureDetector(
+      onTap: () => Navigator.pushNamed(context, 'ProductDetailsScreen'),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              // padding: const EdgeInsets.all(3),
+              color: Colors.black38,
+              width: double.infinity,
+              height: size.height * 26,
+              child: Image.network(
+                url,
+                fit: BoxFit.cover,
+              ),
+            ),
+            whitespace(context, 2, 0),
+            Text(
+              productname,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            Text(price),
+          ],
+        ),
+      ),
+    );
+  }
 
   Future<Categories> getCategoryList() async {
     final response =
@@ -391,6 +453,19 @@ class _HomeScreenState extends State<HomeScreen> {
       return SliderModel.fromJson(data);
     }
   }
+
+  // Future<SliderModel> getRecommended() async {
+  //   final response =
+  //       await http.get(Uri.parse('https://muglimart.com/api/v1/slider'));
+
+  //   var data = jsonDecode(response.body.toString());
+
+  //   if (response.statusCode == 200) {
+  //     return SliderModel.fromJson(data);
+  //   } else {
+  //     return SliderModel.fromJson(data);
+  //   }
+  // }
 }
 
 class BOILERPLATE {
