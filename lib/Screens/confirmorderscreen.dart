@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
@@ -189,46 +190,73 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
       "usemypoint": "20",
       "paymentType": "cod"
     };
-    dynamic token = ForToken.read('LoginToken');
+    dynamic token =
+        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvbXVnbGltYXJ0LmNvbVwvYXBpXC92MVwvY3VzdG9tZXJcL2xvZ2luIiwiaWF0IjoxNjQwMTc0NzEzLCJleHAiOjE2NDAxNzgzMTMsIm5iZiI6MTY0MDE3NDcxMywianRpIjoiRlZsVE8wODllQkVBUWFDRSIsInN1YiI6NSwicHJ2IjoiOGI0MjJlNmY2NTc5MzJiOGFlYmNiMWJmMWUzNTZkZDc2YTM2NWJmMiJ9.gKBV4EcL5ielsWTWyD7Z0PZ94dk0p2cex7NdTZlkkgE";
     try {
       http.Response response = await http.post(
-          Uri.parse("https://muglimart.com/api/v1/customer/profile/update"),
-          body: data,
-          //
-          // 'cart': WishList.toString(),
-          // 'name': "",
-          // 'phone': number,
-          // 'district': " ",
-          // 'area': " ",
-          // 'stateaddress': " ",
-          // 'houseaddress': house,
-          // 'fulladdress': fulladd,
-          // 'zipcode': "1212",
-          // 'totalprice': "1550",
-          // 'shippingfee': "80",
-          // 'discount': "50",
-          // 'additionalshipping': "50",
-          // 'couponcode': coup,
-          // 'totalproductpoint': "20",
-          // 'usemypoint': "20",
-          // 'paymentType': "cod"
-
+          Uri.parse("https://muglimart.com/api/v1/customer/order/save "),
+          body: data.toString(),
+          // {
+          //   'cart': [
+          //     {
+          //       'product_id': 1,
+          //       'product_name': "japani silk sharee - deep jam",
+          //       'sellerid': 1,
+          //       'product_price': 1199,
+          //       'quantity': 1,
+          //       'product_size': "XL",
+          //       'product_color': "Red"
+          //     },
+          //     {
+          //       'product_id': 2,
+          //       'product_name': "jhum tower sarees for women blue tanjin tisha",
+          //       'sellerid': 1,
+          //       'product_price': 1099,
+          //       'quantity': 1,
+          //       'product_size': "M",
+          //       'product_color': "White"
+          //     }
+          //   ].toList(),
+          //   'name': "Rahat iqbal",
+          //   'phone': number,
+          //   'district': ' ',
+          //   'area': ' ',
+          //   'stateaddress': ' ',
+          //   'houseaddress': house,
+          //   'fulladdress': fulladd,
+          //   'zipcode': "1212",
+          //   'totalprice': "1550",
+          //   'shippingfee': "80",
+          //   'discount': "50",
+          //   'additionalshipping': "50",
+          //   'couponcode': coup,
+          //   'totalproductpoint': "20",
+          //   'usemypoint': "20",
+          //   'paymentType': "cod"
+          // },
           headers: {
-            'Authorization': 'Bearer $token',
+            'Accept': "application/json",
+            'Authorization':
+                'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvbXVnbGltYXJ0LmNvbVwvYXBpXC92MVwvY3VzdG9tZXJcL2xvZ2luIiwiaWF0IjoxNjQwMTc1MzIyLCJleHAiOjE2NDAxNzg5MjIsIm5iZiI6MTY0MDE3NTMyMiwianRpIjoiY0s1QUpLeEEwbk9pRTBoSSIsInN1YiI6NSwicHJ2IjoiOGI0MjJlNmY2NTc5MzJiOGFlYmNiMWJmMWUzNTZkZDc2YTM2NWJmMiJ9.RFqvzLNOnjK81yx4rKcrDcBlwVYDMuHtNic92DjalCU',
           });
+      log(response.body.toString());
+      print(response.statusCode);
 
       var JsonData = json.decode(response.body);
+      log(response.toString());
 
       ConfirmOrderModel confirmOrderModel =
           ConfirmOrderModel.fromJson(JsonData);
 
       if (confirmOrderModel.status == "success") {
+        log(response.toString());
         print(confirmOrderModel.status.toString());
         print(confirmOrderModel.order!.ordertrack.toString());
 
         // Navigator.push(
         //     context, MaterialPageRoute(builder: (context) => ProfileScreen()));
       } else {
+        print(response.statusCode);
         print("Not working ");
       }
     } catch (e) {
