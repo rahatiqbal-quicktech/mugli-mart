@@ -5,6 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:muglimart_quicktech/Widgets/afewwidgets.dart';
 import 'package:muglimart_quicktech/Widgets/productmodalssheets.dart';
 import 'package:muglimart_quicktech/Widgets/thebottomnavbar.dart';
+import 'package:muglimart_quicktech/main.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({Key? key}) : super(key: key);
@@ -14,6 +15,21 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
+  List<Map<String, dynamic>> CartList = [];
+  //
+  @override
+  void initState() {
+    super.initState();
+    fetchwishlist();
+  }
+
+  fetchwishlist() async {
+    List<Map<String, dynamic>> list = await cartSql.fetchProducts();
+    setState(() {
+      CartList = list;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size / 100;
@@ -29,7 +45,7 @@ class _CartScreenState extends State<CartScreen> {
             Expanded(
               child: ListView.builder(
                   shrinkWrap: true,
-                  itemCount: 15,
+                  itemCount: CartList.length,
                   scrollDirection: Axis.vertical,
                   itemBuilder: (context, index) {
                     return Container(
@@ -48,7 +64,8 @@ class _CartScreenState extends State<CartScreen> {
                                   color: Colors.red,
                                   borderRadius: BorderRadius.circular(5)),
                               child: Image.network(
-                                "https://mediaslide-europe.storage.googleapis.com/named/news_pictures/2018/10/large-1540206295-b16ecc226f0c7de6cd3348f340dc7427.jpg",
+                                CartList[index]["productimage"].toString(),
+                                // "https://mediaslide-europe.storage.googleapis.com/named/news_pictures/2018/10/large-1540206295-b16ecc226f0c7de6cd3348f340dc7427.jpg",
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -62,11 +79,17 @@ class _CartScreenState extends State<CartScreen> {
                                 // mainAxisAlignment: MainAxisAlignment.end,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text(
-                                    "Adidas Blue Jacket",
-                                    style: TextStyle(fontSize: 15),
+                                  Container(
+                                    width: size.width * 50,
+                                    child: Text(
+                                      CartList[index]["productname"].toString(),
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(fontSize: 15),
+                                    ),
                                   ),
-                                  const Text("Price 1500tk"),
+                                  Text(CartList[index]["productprice"]
+                                          .toString() +
+                                      " tk"),
                                   Expanded(
                                     child: Align(
                                       alignment: FractionalOffset.bottomRight,
@@ -77,7 +100,14 @@ class _CartScreenState extends State<CartScreen> {
                                             CrossAxisAlignment.end,
                                         children: [
                                           TextButton(
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              setState(() {
+                                                cartSql.deleteProduct(
+                                                    CartList[index]["id"]);
+                                              });
+                                              Navigator.pushNamed(
+                                                  context, "CartScreen");
+                                            },
                                             child: const Text(
                                               "Remove",
                                             ),

@@ -1,12 +1,14 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:muglimart_quicktech/Models/Categories.dart';
 import 'package:muglimart_quicktech/Models/Product.dart';
 import 'package:muglimart_quicktech/Models/RecommendedModel.dart';
 import 'package:muglimart_quicktech/Models/SliderModel.dart';
+import 'package:muglimart_quicktech/Screens/productdetailsscreen.dart';
 import 'package:muglimart_quicktech/Utilities/colors.dart';
 import 'package:muglimart_quicktech/Widgets/afewwidgets.dart';
 import 'package:muglimart_quicktech/Widgets/bottomnavbar.dart';
@@ -289,6 +291,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                     .toString(),
                                 snapshot.data!.products!.data![index]
                                     .productnewprice
+                                    .toString(),
+                                snapshot.data!.products!.data![index].id
                                     .toString())),
                       );
                     } else {
@@ -394,9 +398,18 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget anotheritemcard(
-      var size, String url, String productname, String price) {
+      var size, String url, String productname, String price, String idno) {
     return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, 'ProductDetailsScreen'),
+      onTap: () {
+        // Get.to(ProductDetailsScreen(id: idno));
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ProductDetailsScreen(
+                    id: idno,
+                  )),
+        );
+      },
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
         child: Column(

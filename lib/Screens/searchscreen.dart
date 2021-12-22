@@ -1,8 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:muglimart_quicktech/Models/SeacrhResultModel.dart';
+import 'package:muglimart_quicktech/Screens/searchresultscreen.dart';
 import 'package:muglimart_quicktech/Widgets/afewwidgets.dart';
 import 'package:muglimart_quicktech/Widgets/buttons.dart';
+import 'package:http/http.dart' as http;
 import 'package:muglimart_quicktech/Widgets/thebottomnavbar.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -16,6 +21,7 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size / 100;
+    TextEditingController searchController = TextEditingController();
     return Scaffold(
       appBar: myappbar(context, size, Colors.grey.shade50),
       bottomNavigationBar: const TheBottomNavBar(),
@@ -27,6 +33,7 @@ class _SearchScreenState extends State<SearchScreen> {
             children: [
               whitespace(context, 6, 0),
               TextFormField(
+                controller: searchController,
                 decoration: const InputDecoration(
                   icon: Icon(Ionicons.search_circle_outline),
                   hintText: 'Search products or category',
@@ -36,12 +43,21 @@ class _SearchScreenState extends State<SearchScreen> {
               whitespace(context, 2, 0),
               Align(
                 alignment: Alignment.centerRight,
-                child: outlinedButton(
-                    label: "Search",
-                    icon: Ionicons.checkmark,
-                    primarycolor: Colors.black,
-                    bordercolor: Colors.grey,
-                    action: () {}),
+                child: OutlinedButton.icon(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SearchResultScreen(
+                                searchController.text.toString())),
+                      );
+                    },
+                    icon: Icon(Ionicons.checkmark),
+                    label: Text("Search"),
+                    style: OutlinedButton.styleFrom(
+                      primary: Colors.black,
+                      side: BorderSide(color: Colors.grey),
+                    )),
               ),
               whitespace(context, 5, 0),
               Text(
@@ -81,5 +97,28 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
       ),
     );
+  }
+
+  void search(String searchkey) async {
+    try {
+      SearchResultModel searchresult = SearchResultModel();
+      http.Response response = await http.post(
+          Uri.parse("https://muglimart.com/api/v1/search/product"),
+          body: {'category': "1", 'keyword': searchkey});
+
+      if (response.statusCode == 200) {
+        searchresult = jsonDecode(response.body.toString());
+        // var token = data['token'];
+        print(searchresult.toString());
+        print("abc");
+      } else {
+        // var data = jsonDecode(response.body.toString());
+        // print(data['error']);
+        print("Not worked");
+        print(response.body);
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 }
