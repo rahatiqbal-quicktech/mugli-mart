@@ -1,9 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:muglimart_quicktech/Models/EditProfileModel.dart';
 import 'package:muglimart_quicktech/Screens/edit%20profile%20screen/editprofile_textfield.dart';
+import 'package:muglimart_quicktech/Screens/profilescreen.dart';
 import 'package:muglimart_quicktech/Utilities/colors.dart';
 import 'package:muglimart_quicktech/Widgets/afewwidgets.dart';
 import 'package:muglimart_quicktech/Widgets/thebottomnavbar.dart';
+import 'package:http/http.dart' as http;
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({Key? key}) : super(key: key);
@@ -87,6 +93,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   style: ButtonStyle(
                       padding: MaterialStateProperty.all(EdgeInsets.all(8.0))),
                   onPressed: () {
+                    updateprofile(nameController.text, phoneController.text);
                     // Navigator.pushNamed(context, 'LoginScreen');
                   },
                   child: Text(
@@ -100,5 +107,37 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         ),
       ),
     );
+  }
+
+  final ForToken = GetStorage();
+
+  Future updateprofile(String name, String number) async {
+    // ForToken.write('LoginToken',
+    //     'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvbXVnbGltYXJ0LmNvbVwvYXBpXC92MVwvY3VzdG9tZXJcL2xvZ2luIiwiaWF0IjoxNjQwMTYyOTExLCJleHAiOjE2NDAxNjY1MTEsIm5iZiI6MTY0MDE2MjkxMSwianRpIjoib3RHdVNpUER5RUtpSTdHYyIsInN1YiI6NSwicHJ2IjoiOGI0MjJlNmY2NTc5MzJiOGFlYmNiMWJmMWUzNTZkZDc2YTM2NWJmMiJ9.gV_bkw25Tm8-61mSHH5GW6Mg8GpQI_P3mtZxqHVOam0');
+    dynamic token = ForToken.read('LoginToken');
+    try {
+      http.Response response = await http.post(
+          Uri.parse("https://muglimart.com/api/v1/customer/profile/update"),
+          body: {
+            'fullName': name,
+            'phoneNumber': number,
+          },
+          headers: {
+            'Authorization': 'Bearer $token',
+          });
+
+      var JsonData = json.decode(response.body);
+
+      EditProfileModel editProfileModel = EditProfileModel.fromJson(JsonData);
+
+      if (editProfileModel.status == "success") {
+        print(editProfileModel.update!.fullName);
+        print(editProfileModel.update!.phoneNumber);
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => ProfileScreen()));
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 }

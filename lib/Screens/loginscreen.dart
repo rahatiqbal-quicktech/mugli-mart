@@ -221,6 +221,7 @@ class _LoginScreenState extends State<LoginScreen> {
         var data = jsonDecode(response.body.toString());
         var token = data['token'];
         print(data['token'].toString());
+        authStorage.write('LoginToken', data['token']);
         print("abc");
       } else {
         var data = jsonDecode(response.body.toString());

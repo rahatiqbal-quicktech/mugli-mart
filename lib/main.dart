@@ -12,14 +12,13 @@ import 'package:muglimart_quicktech/Screens/TrackOrderScreen.dart';
 import 'package:muglimart_quicktech/Screens/campaignsscreen.dart';
 import 'package:muglimart_quicktech/Screens/cartscreen.dart';
 import 'package:muglimart_quicktech/Screens/changeadressscreen.dart';
+import 'package:muglimart_quicktech/Screens/confirmorderscreen.dart';
 import 'package:muglimart_quicktech/Screens/edit%20profile%20screen/editprofilescreen.dart';
 import 'package:muglimart_quicktech/Screens/shippingaddressscreen.dart';
 import 'package:muglimart_quicktech/boilerplates/demo.dart';
 import 'package:muglimart_quicktech/Screens/homescreen.dart';
 import 'package:muglimart_quicktech/Screens/loginscreen.dart';
-import 'package:muglimart_quicktech/Screens/productdetailsscreen.dart';
 import 'package:muglimart_quicktech/Screens/profilescreen.dart';
-import 'package:muglimart_quicktech/Screens/reviewsscreen.dart';
 import 'package:muglimart_quicktech/Screens/searchscreen.dart';
 import 'package:muglimart_quicktech/Screens/signupscreen.dart';
 import 'package:muglimart_quicktech/Screens/underconstructionscreen.dart';
@@ -27,7 +26,6 @@ import 'package:muglimart_quicktech/Screens/wishlistscreen.dart';
 import 'package:muglimart_quicktech/boilerplates/recommended_demo.dart';
 import 'package:muglimart_quicktech/boilerplates/showwishlistsqfliteboilerplate.dart';
 import 'package:muglimart_quicktech/boilerplates/sqfliteboilerplate.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 
 AnotherSqlHelper sqlHelper = AnotherSqlHelper();
 CartSqlHelper cartSql = CartSqlHelper();
@@ -57,7 +55,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: 'LoginScreen',
+      // initialRoute: 'LoginScreen',
       routes: {
         'LoginScreen': (context) => const LoginScreen(),
         'SignUpScreen': (context) => const SignUpScreen(),
@@ -85,7 +83,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      // home: ShowWishlistBoilerplate(),
+      home: ConfirmOrderScreen(),
     );
   }
 }
