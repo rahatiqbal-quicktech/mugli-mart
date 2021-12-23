@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:get/get.dart';
+import 'package:muglimart_quicktech/Screens/confirmorderscreen.dart';
 import 'package:muglimart_quicktech/Widgets/afewwidgets.dart';
 import 'package:muglimart_quicktech/Widgets/productmodalssheets.dart';
 import 'package:muglimart_quicktech/Widgets/thebottomnavbar.dart';
@@ -105,8 +107,9 @@ class _CartScreenState extends State<CartScreen> {
                                                 cartSql.deleteProduct(
                                                     CartList[index]["id"]);
                                               });
-                                              Navigator.pushNamed(
-                                                  context, "CartScreen");
+                                              // Navigator.pushNamed(
+                                              //     context, "CartScreen");
+                                              Get.offAll(CartScreen());
                                             },
                                             child: const Text(
                                               "Remove",
@@ -116,8 +119,9 @@ class _CartScreenState extends State<CartScreen> {
                                             ),
                                           ),
                                           IconButton(
-                                              onPressed: () =>
-                                                  productmodal(context),
+                                              onPressed: () => productmodal(
+                                                  context,
+                                                  CartList[index]["id"]),
                                               icon:
                                                   const Icon(Icons.more_horiz))
                                         ],
@@ -163,7 +167,7 @@ class _CartScreenState extends State<CartScreen> {
                           ),
                           whitespace(context, 0, 2),
                           const Text(
-                            "20000 Taka",
+                            "**",
                             style: TextStyle(
                                 decorationColor: Colors.blue,
                                 decoration: TextDecoration.underline,
@@ -178,7 +182,9 @@ class _CartScreenState extends State<CartScreen> {
                   ),
                   Spacer(),
                   OutlinedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Get.to(ConfirmOrderScreen());
+                    },
                     child: const Text('Proceed'),
                     style: OutlinedButton.styleFrom(
                       primary: Colors.white,

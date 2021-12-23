@@ -86,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             //         .toString()));
                           });
                     } else {
-                      return Text("Loading.....");
+                      return CircularProgressIndicator();
                     }
                   }),
 
@@ -194,7 +194,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
               whitespace(context, 2.8, 0),
               Container(
-                alignment: Alignment.center,
+                // alignment: Alignment.center,
                 margin: const EdgeInsets.fromLTRB(0, 10, 10, 10),
                 height: size.height * 20,
                 width: double.infinity,
@@ -202,24 +202,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   borderRadius: BorderRadius.circular(10),
                   color: Colors.brown,
                 ),
-                child: RichText(
-                    text: TextSpan(children: <TextSpan>[
-                  TextSpan(
-                      text: "Black Friday",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: size.width * 10,
-                        fontWeight: FontWeight.w600,
-                        fontStyle: FontStyle.italic,
-                      )),
-                  TextSpan(
-                      text: "\nLimited for a few days!!!",
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.88888),
-                        fontSize: size.width * 5,
-                        fontWeight: FontWeight.w600,
-                      )),
-                ])),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: Image(
+                    image: NetworkImage(
+                        "https://www.muglimart.com/public/uploads/banner/1639484431-ezgif.com-gif-maker%20(4).gif"),
+                    fit: BoxFit.fill,
+                  ),
+                ),
               ),
               whitespace(context, 2.6, 0),
               Text(

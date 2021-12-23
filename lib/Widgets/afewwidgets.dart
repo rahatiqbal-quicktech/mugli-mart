@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:muglimart_quicktech/Screens/categoriesscreen.dart';
 import 'package:muglimart_quicktech/Utilities/colors.dart';
 
 int? selectedindex;
@@ -105,8 +106,7 @@ AppBar myappbar(BuildContext context, var size, Color backgroundcolor) {
                           title: const Text("Categories"),
                           leading: const Icon(Icons.category_outlined),
                           onTap: () {
-                            Navigator.pushNamed(
-                                context, 'UnderConstructionScreen');
+                            Get.to(CategoriesScreen());
                           },
                         ),
                         ListTile(
@@ -117,11 +117,10 @@ AppBar myappbar(BuildContext context, var size, Color backgroundcolor) {
                           },
                         ),
                         ListTile(
-                          title: const Text("Settings"),
+                          title: const Text("Change Details"),
                           leading: const Icon(Icons.settings),
                           onTap: () {
-                            Navigator.pushNamed(
-                                context, 'UnderConstructionScreen');
+                            Navigator.pushNamed(context, 'EditProfileScreen');
                           },
                         ),
                         ListTile(

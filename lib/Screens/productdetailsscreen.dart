@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:muglimart_quicktech/Models/ProductDetailsModel.dart';
@@ -85,6 +86,28 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         print("Product Couldn't Be Added ");
       } else {
         print("SQL Issue");
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  addToCart(
+      {required String sentid,
+      required String sentproductname,
+      required double sentproductprice,
+      required String sentproductimage}) async {
+    String fullimageurl = "https://muglimart.com/" + sentproductimage;
+    try {
+      int a = await cartSql.addProduct(
+          sentid, sentproductname, sentproductprice, fullimageurl);
+
+      if (a == 1) {
+        print("Product Added To Cart ");
+      } else if (a == 0) {
+        print("Product Couldn't Be Added To Cart ");
+      } else {
+        print("SQL Issue for Cart");
       }
     } catch (e) {
       print(e);
@@ -212,7 +235,21 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                       showDialog(
                                           context: context,
                                           builder: (context) {
-                                            return cartdialogue(context, size);
+                                            return cartdialogue(
+                                                context,
+                                                size,
+                                                snapshot.data!.productdetails!
+                                                    .productname
+                                                    .toString(),
+                                                snapshot.data!.productdetails!
+                                                    .productnewprice!
+                                                    .toDouble(),
+                                                snapshot
+                                                    .data!.productdetails!.id
+                                                    .toString(),
+                                                imagelink(snapshot.data!
+                                                    .productdetails!.proImage
+                                                    .toString()));
                                           });
                                     },
                                     icon: Icon(Icons.shopping_bag_outlined),
@@ -255,20 +292,30 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                       primary: Colors.redAccent,
                                       side: BorderSide(color: Colors.redAccent),
                                     )),
-                                productdetailstexts(
-                                    "4/5", size, 2, FontWeight.w600),
+                                TextButton(
+                                    onPressed: () {
+                                      cartSql.deleteProduct("13");
+                                      print(snapshot.data!.productdetails!.id
+                                          .toString());
+                                    },
+                                    child: Text("Print id"))
+                                // productdetailstexts(
+                                //     "4/5", size, 2, FontWeight.w600),
                               ],
                             ),
                             whitespace(context, 3.5, 0),
-                            Text(
-                              snapshot.data!.productdetails!.productdetails
-                                  .toString(),
-                              // "In the future, these models will help us map the stream of data coming from a database so that these are ready to be used in the user interface. As we do not have set up our database yet, we will also use these models to store static lists of sample data.The Food Delivery Series is a journey to build a production Food Delivery app from scratch using Flutter. The series will take you through the development cycle of an app business from planning to design, development and testing. By the end of the series, the app will be launched and live on iOS and Android devices.",
-                              style: GoogleFonts.openSans(
-                                  textStyle: const TextStyle(
-                                fontSize: 14,
-                              )),
-                            ),
+                            Html(
+                                data: snapshot
+                                    .data!.productdetails!.productdetails
+                                    .toString()),
+                            // Text(
+                            //   snapshot.data!.productdetails!.productdetails
+                            //       .toString(),
+                            //   style: GoogleFonts.openSans(
+                            //       textStyle: const TextStyle(
+                            //     fontSize: 14,
+                            //   )),
+                            // ),
                             whitespace(context, 5, 0),
                             productdetailstexts(
                                 "Reviews", size, 3, FontWeight.w600),
@@ -331,18 +378,22 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     );
   }
 
-  Widget cartdialogue(BuildContext context, Size size) {
+  Widget cartdialogue(BuildContext context, Size size, String productname,
+      double productprice, String productid, String imageurl) {
+    // String fullurl = "https://muglimart.com/" + imageurl;
     return Dialog(
       child: Container(
         width: size.width * 88,
-        height: size.height * 65,
+        height: size.height * 35,
         padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             whitespace(context, 2, 0),
             Text(
-              "Logo Play Cropped Hoodie",
+              productname,
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
               style: GoogleFonts.openSans(
                   textStyle: TextStyle(
                 fontSize: 15,
@@ -350,10 +401,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               )),
             ),
             whitespace(context, 1.1, 0),
-            Text("Price 1500 taka"),
+            Text("Price  " + productprice.toString()),
             whitespace(context, 1.1, 0),
             Text(
-              "Total 1500 tk",
+              "Total Price  " + productprice.toString(),
               style: GoogleFonts.openSans(
                   textStyle: TextStyle(
                 fontSize: 17,
@@ -361,50 +412,56 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               )),
             ),
             whitespace(context, 5, 0),
-            Text("Quantity"),
-            whitespace(context, 3, 0),
-            Row(
-              children: [
-                Text("Size"),
-                whitespace(context, 0, 8),
-                DropdownButton(
-                  value: size_dropdownvalue,
-                  icon: Icon(Icons.keyboard_arrow_down),
-                  items: size_items.map((String items) {
-                    return DropdownMenuItem(value: items, child: Text(items));
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      size_dropdownvalue = newValue!;
-                    });
-                  },
-                ),
-              ],
-            ),
-            whitespace(context, 3, 0),
-            Row(
-              children: [
-                Text("Color"),
-                whitespace(context, 0, 8),
-                DropdownButton(
-                  value: color_dropdownvalue,
-                  icon: Icon(Icons.keyboard_arrow_down),
-                  items: color_items.map((String items) {
-                    return DropdownMenuItem(value: items, child: Text(items));
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      color_dropdownvalue = newValue!;
-                    });
-                  },
-                ),
-              ],
-            ),
+            // Text("Quantity"),
+            // whitespace(context, 3, 0),
+            // Row(
+            //   children: [
+            //     Text("Size"),
+            //     whitespace(context, 0, 8),
+            //     DropdownButton(
+            //       value: size_dropdownvalue,
+            //       icon: Icon(Icons.keyboard_arrow_down),
+            //       items: size_items.map((String items) {
+            //         return DropdownMenuItem(value: items, child: Text(items));
+            //       }).toList(),
+            //       onChanged: (String? newValue) {
+            //         setState(() {
+            //           size_dropdownvalue = newValue!;
+            //         });
+            //       },
+            //     ),
+            //   ],
+            // ),
+            // whitespace(context, 3, 0),
+            // Row(
+            //   children: [
+            //     Text("Color"),
+            //     whitespace(context, 0, 8),
+            //     DropdownButton(
+            //       value: color_dropdownvalue,
+            //       icon: Icon(Icons.keyboard_arrow_down),
+            //       items: color_items.map((String items) {
+            //         return DropdownMenuItem(value: items, child: Text(items));
+            //       }).toList(),
+            //       onChanged: (String? newValue) {
+            //         setState(() {
+            //           color_dropdownvalue = newValue!;
+            //         });
+            //       },
+            //     ),
+            //   ],
+            // ),
             Align(
               alignment: FractionalOffset.bottomCenter,
               child: ElevatedButton(
                 child: Text('ADD'),
-                onPressed: () {},
+                onPressed: () {
+                  addToCart(
+                      sentid: productid,
+                      sentproductname: productname,
+                      sentproductprice: productprice,
+                      sentproductimage: imageurl);
+                },
               ),
             ),
           ],

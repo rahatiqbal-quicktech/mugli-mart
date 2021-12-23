@@ -110,8 +110,9 @@ class _WishListScreenState extends State<WishListScreen> {
                                           sqlHelper.deleteProduct(
                                               WishList[index]["id"]);
                                         });
-                                        Navigator.pushNamed(
-                                            context, "WishListScreen");
+                                        // Navigator.pushNamed(
+                                        //     context, "WishListScreen");
+                                        Get.offAll(WishListScreen());
                                       },
                                       child: const Text(
                                         "Remove",

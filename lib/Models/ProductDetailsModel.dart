@@ -47,7 +47,7 @@ class Productdetails {
   int? id;
   int? productcat;
   int? productsubcat;
-  Null productchildcat;
+  int? productchildcat;
   int? productbrand;
   int? campaignId;
   String? productname;
@@ -533,7 +533,7 @@ class Productbrand {
   int? id;
   int? productcat;
   int? productsubcat;
-  Null productchildcat;
+  int? productchildcat;
   int? productbrand;
   int? campaignId;
   String? productname;

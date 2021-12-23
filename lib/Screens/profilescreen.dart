@@ -34,7 +34,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             whitespace(context, 2, 0),
             Text(
-              usermodel.name,
+              "User's Name",
               style: GoogleFonts.openSans(
                   textStyle: TextStyle(
                 fontWeight: FontWeight.w600,

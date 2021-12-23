@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:muglimart_quicktech/Screens/cartscreen.dart';
+import 'package:muglimart_quicktech/Screens/productdetailsscreen.dart';
+import 'package:muglimart_quicktech/main.dart';
 
-productmodal(BuildContext context) {
+productmodal(BuildContext context, String productid) {
   return showModalBottomSheet(
       isScrollControlled: true,
       // elevation: 20,
@@ -19,14 +23,15 @@ productmodal(BuildContext context) {
                 title: const Text("Show Details"),
                 leading: const Icon(Ionicons.newspaper),
                 onTap: () {
-                  Navigator.pushNamed(context, 'UnderConstructionScreen');
+                  Get.to(ProductDetailsScreen(id: productid));
                 },
               ),
               ListTile(
                 title: const Text("Remove from cart"),
                 leading: const Icon(Ionicons.trash),
                 onTap: () {
-                  Navigator.pushNamed(context, 'ProfileScreen');
+                  cartSql.deleteProduct(productid);
+                  Get.offAll(CartScreen());
                 },
               ),
               ListTile(

@@ -2,10 +2,12 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:muglimart_quicktech/Models/ConfirmOrderModel.dart';
+import 'package:muglimart_quicktech/Screens/ordersuccessscreen.dart';
 import 'package:muglimart_quicktech/Utilities/colors.dart';
 import 'package:muglimart_quicktech/Widgets/afewwidgets.dart';
 import 'package:muglimart_quicktech/Widgets/thebottomnavbar.dart';
@@ -109,23 +111,40 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
               ),
               whitespace(context, 3.5, 0),
               Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  style: ButtonStyle(
-                      padding: MaterialStateProperty.all(EdgeInsets.all(8.0))),
-                  onPressed: () {
-                    confirmorder(
-                        phoneController.text,
-                        houseaddressController.text,
-                        addressController.text,
-                        couponController.text);
-                  },
-                  child: Text(
-                    "Proceed",
-                    style: TextStyle(color: basiccolor, fontSize: 23),
+                alignment: Alignment.center,
+                child: SizedBox(
+                  width: size.width * 50,
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                      // padding: MaterialStateProperty.all(EdgeInsets.all(8.0)),
+                      primary: LogoColor,
+                      backgroundColor: LogoColor,
+                      onSurface: Colors.grey,
+                    ),
+                    onPressed: () {
+                      confirmorder_fresh();
+                    },
+                    child: Text(
+                      "Proceed",
+                      style: TextStyle(color: Colors.white, fontSize: 23),
+                    ),
                   ),
                 ),
               ),
+              // Align(
+              //   alignment: Alignment.centerRight,
+              //   child: TextButton(
+              //     style: ButtonStyle(
+              //         padding: MaterialStateProperty.all(EdgeInsets.all(8.0))),
+              //     onPressed: () {
+              //       print("This is a list " + WishList.toString());
+              //     },
+              //     child: Text(
+              //       "print list",
+              //       style: TextStyle(color: basiccolor, fontSize: 23),
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ),
@@ -133,26 +152,83 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
     );
   }
 
-  List<Map<String, dynamic>> WishList = [];
-  //
+  List<Map<String, dynamic>> WishList = [
+    {
+      "product_id": 1,
+      "product_name": "japani silk sharee - deep jam",
+      "sellerid": 1,
+      "product_price": 1199,
+      "quantity": 1,
+      "product_size": "XL",
+      "product_color": "Red"
+    },
+    {
+      "product_id": 2,
+      "product_name": "jhum tower sarees for women blue tanjin tisha",
+      "sellerid": 1,
+      "product_price": 1099,
+      "quantity": 1,
+      "product_size": "M",
+      "product_color": "White"
+    }
+  ];
   @override
   void initState() {
+    print(WishList.toList());
     super.initState();
-    fetchwishlist();
+    // fetchwishlist();
   }
 
-  fetchwishlist() async {
-    List<Map<String, dynamic>> list = await sqlHelper.fetchProducts();
-    setState(() {
-      WishList = list;
-    });
-  }
+  // fetchwishlist() async {
+  //   List<Map<String, dynamic>> list = await sqlHelper.fetchProducts();
+  //   setState(() {
+  //     WishList = list;
+  //   });
+  // }
 
   final ForToken = GetStorage();
 
   Future confirmorder(
       String number, String house, String fulladd, String coup) async {
     Map data = {
+      'cart': [
+        {
+          'product_id': 1,
+          'product_name': "japani silk sharee - deep jam",
+          'sellerid': 1,
+          'product_price': 1199,
+          'quantity': 1,
+          'product_size': "XL",
+          'product_color': "Red"
+        },
+        {
+          'product_id': 2,
+          'product_name': "jhum tower sarees for women blue tanjin tisha",
+          'sellerid': 1,
+          'product_price': 1099,
+          'quantity': 1,
+          'product_size': "M",
+          'product_color': "White"
+        }
+      ],
+      'name': 'Md. Zadu Mia',
+      'phone': '01742892725',
+      'district': "1",
+      'area': "5",
+      'stateaddress': "Road, 4/a",
+      'houseaddress': "Mirpur, Dhaka",
+      'fulladdress': "Mirpur, Dhaka",
+      'zipcode': "1212",
+      'totalprice': "1550",
+      'shippingfee': "80",
+      'discount': "50",
+      'additionalshipping': "50",
+      'couponcode': "mugilimartbijoy",
+      'totalproductpoint': "20",
+      'usemypoint': "20",
+      'paymentType': "cod"
+    };
+    Map anotherdata = {
       "cart": [
         {
           "product_id": 1,
@@ -191,12 +267,12 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
       "paymentType": "cod"
     };
     dynamic token =
-        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvbXVnbGltYXJ0LmNvbVwvYXBpXC92MVwvY3VzdG9tZXJcL2xvZ2luIiwiaWF0IjoxNjQwMTc0NzEzLCJleHAiOjE2NDAxNzgzMTMsIm5iZiI6MTY0MDE3NDcxMywianRpIjoiRlZsVE8wODllQkVBUWFDRSIsInN1YiI6NSwicHJ2IjoiOGI0MjJlNmY2NTc5MzJiOGFlYmNiMWJmMWUzNTZkZDc2YTM2NWJmMiJ9.gKBV4EcL5ielsWTWyD7Z0PZ94dk0p2cex7NdTZlkkgE";
+        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvbXVnbGltYXJ0LmNvbVwvYXBpXC92MVwvY3VzdG9tZXJcL2xvZ2luIiwiaWF0IjoxNjQwMjMxNzQ5LCJleHAiOjE2NDAyMzUzNDksIm5iZiI6MTY0MDIzMTc0OSwianRpIjoicm9DbFdaVEdaSG82QktHRiIsInN1YiI6NSwicHJ2IjoiOGI0MjJlNmY2NTc5MzJiOGFlYmNiMWJmMWUzNTZkZDc2YTM2NWJmMiJ9.sNiwdu0iWz12ojfQa3Opvgnw8NiXOvE5LxtFOb2KPR8";
     try {
       http.Response response = await http.post(
-          Uri.parse("https://muglimart.com/api/v1/customer/order/save "),
-          body: data.toString(),
-          // {
+          Uri.parse("https://muglimart.com/api/v1/customer/order/save"),
+          body: jsonEncode(anotherdata),
+          //     {
           //   'cart': [
           //     {
           //       'product_id': 1,
@@ -206,7 +282,7 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
           //       'quantity': 1,
           //       'product_size': "XL",
           //       'product_color': "Red"
-          //     },
+          //     },this i sthe processed data, add single cotation later
           //     {
           //       'product_id': 2,
           //       'product_name': "jhum tower sarees for women blue tanjin tisha",
@@ -216,7 +292,7 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
           //       'product_size': "M",
           //       'product_color': "White"
           //     }
-          //   ].toList(),
+          //   ],
           //   'name': "Rahat iqbal",
           //   'phone': number,
           //   'district': ' ',
@@ -237,7 +313,7 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
           headers: {
             'Accept': "application/json",
             'Authorization':
-                'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvbXVnbGltYXJ0LmNvbVwvYXBpXC92MVwvY3VzdG9tZXJcL2xvZ2luIiwiaWF0IjoxNjQwMTc1MzIyLCJleHAiOjE2NDAxNzg5MjIsIm5iZiI6MTY0MDE3NTMyMiwianRpIjoiY0s1QUpLeEEwbk9pRTBoSSIsInN1YiI6NSwicHJ2IjoiOGI0MjJlNmY2NTc5MzJiOGFlYmNiMWJmMWUzNTZkZDc2YTM2NWJmMiJ9.RFqvzLNOnjK81yx4rKcrDcBlwVYDMuHtNic92DjalCU',
+                'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvbXVnbGltYXJ0LmNvbVwvYXBpXC92MVwvY3VzdG9tZXJcL2xvZ2luIiwiaWF0IjoxNjQwMjMxNzQ5LCJleHAiOjE2NDAyMzUzNDksIm5iZiI6MTY0MDIzMTc0OSwianRpIjoicm9DbFdaVEdaSG82QktHRiIsInN1YiI6NSwicHJ2IjoiOGI0MjJlNmY2NTc5MzJiOGFlYmNiMWJmMWUzNTZkZDc2YTM2NWJmMiJ9.sNiwdu0iWz12ojfQa3Opvgnw8NiXOvE5LxtFOb2KPR8',
           });
       log(response.body.toString());
       print(response.statusCode);
@@ -255,6 +331,60 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
 
         // Navigator.push(
         //     context, MaterialPageRoute(builder: (context) => ProfileScreen()));
+      } else {
+        print(response.statusCode);
+        print("Not working ");
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future confirmorder_fresh() async {
+    dynamic token =
+        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvbXVnbGltYXJ0LmNvbVwvYXBpXC92MVwvY3VzdG9tZXJcL2xvZ2luIiwiaWF0IjoxNjQwMjQ4MTUwLCJleHAiOjE2NDAyNTE3NTAsIm5iZiI6MTY0MDI0ODE1MCwianRpIjoiNTZDOWxENlgwckZZdDBqNyIsInN1YiI6NSwicHJ2IjoiOGI0MjJlNmY2NTc5MzJiOGFlYmNiMWJmMWUzNTZkZDc2YTM2NWJmMiJ9.OQI46tffvp6FTlTPM-QibZsDIXmnYHdmi_KjbxkTFO4";
+    try {
+      http.Response response = await http
+          .post(Uri.parse("https://muglimart.com/api/v1/customer/order/save"),
+              body: jsonEncode({
+                "cart": WishList,
+                'name': "Md. Zadu Mia",
+                "phone": "01742892725",
+                "district": "1",
+                "area": "5",
+                "stateaddress": "Road, 4/a",
+                "houseaddress": "Mirpur, Dhaka",
+                "fulladdress": "Mirpur, Dhaka",
+                "zipcode": "1212",
+                "totalprice": "1550",
+                "shippingfee": "80",
+                "discount": "50",
+                "additionalshipping": "50",
+                "couponcode": "mugilimartbijoy",
+                "totalproductpoint": "20",
+                "usemypoint": "20",
+                "paymentType": "cod"
+              }),
+              headers: {
+            'Accept': "application/json",
+            "Content-type": "application/json",
+            'Authorization': 'Bearer ${token}',
+          });
+      log(response.body.toString());
+      print(response.statusCode);
+
+      var JsonData = json.decode(response.body);
+      log(response.toString());
+
+      ConfirmOrderModel confirmOrderModel =
+          ConfirmOrderModel.fromJson(JsonData);
+
+      if (confirmOrderModel.status == "success") {
+        log(response.toString());
+        print(confirmOrderModel.status.toString());
+        print(confirmOrderModel.order!.ordertrack.toString());
+        Get.offAll(OrderSuccessScreen(
+            OrderTrackId: confirmOrderModel.order!.ordertrack.toString()));
       } else {
         print(response.statusCode);
         print("Not working ");

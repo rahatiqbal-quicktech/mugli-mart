@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:hive/hive.dart';
 import 'package:muglimart_quicktech/AnotherSqlHelper.dart';
@@ -14,6 +15,7 @@ import 'package:muglimart_quicktech/Screens/cartscreen.dart';
 import 'package:muglimart_quicktech/Screens/changeadressscreen.dart';
 import 'package:muglimart_quicktech/Screens/confirmorderscreen.dart';
 import 'package:muglimart_quicktech/Screens/edit%20profile%20screen/editprofilescreen.dart';
+import 'package:muglimart_quicktech/Screens/ordersuccessscreen.dart';
 import 'package:muglimart_quicktech/Screens/shippingaddressscreen.dart';
 import 'package:muglimart_quicktech/boilerplates/demo.dart';
 import 'package:muglimart_quicktech/Screens/homescreen.dart';
@@ -54,7 +56,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       // initialRoute: 'LoginScreen',
       routes: {
         'LoginScreen': (context) => const LoginScreen(),
@@ -83,7 +85,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: ConfirmOrderScreen(),
+      home: HomeScreen(),
     );
   }
 }

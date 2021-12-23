@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:muglimart_quicktech/Controllers/anotherCampaignController.dart';
 import 'package:muglimart_quicktech/Controllers/campaignController.dart';
+import 'package:muglimart_quicktech/Models/AnotherCampaignModel.dart';
 import 'package:muglimart_quicktech/Models/CampaignModel.dart';
 import 'package:muglimart_quicktech/Models/SliderModel.dart';
 import 'package:muglimart_quicktech/Widgets/afewwidgets.dart';
@@ -18,10 +20,10 @@ class CampaignScreen extends StatefulWidget {
 
 class _CampaignScreenState extends State<CampaignScreen> {
   // var campaigncontroller = CampaignController();
-  CampaignModel? model;
+  AnotherCampaignsModel? model;
 
   getdata() {
-    CampaignController().getcampaigns().then((value) => {
+    AnotherCampaignController().getcampaigns().then((value) => {
           setState(() {
             model = value;
           })
@@ -48,13 +50,13 @@ class _CampaignScreenState extends State<CampaignScreen> {
           padding: const EdgeInsets.fromLTRB(8, 5, 8, 0),
           child: Column(
             children: [
-              FutureBuilder<SliderModel>(
+              FutureBuilder<AnotherCampaignsModel>(
                   future: getSliders(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       return ListView.builder(
                           shrinkWrap: true,
-                          itemCount: snapshot.data!.sliders!.length,
+                          itemCount: snapshot.data!.campaigns!.length,
                           itemBuilder: (context, index) {
                             return Container(
                               margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
@@ -65,10 +67,8 @@ class _CampaignScreenState extends State<CampaignScreen> {
                                 borderRadius: BorderRadius.circular(8.0),
                                 child: Image.network(
                                   baseUrl +
-                                      snapshot.data!.sliders![index].image
+                                      snapshot.data!.campaigns![index].image
                                           .toString(),
-                                  //         .toString())
-                                  // "https://thumbs.gfycat.com/BarrenOptimisticJapanesebeetle-size_restricted.gif",
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -82,91 +82,6 @@ class _CampaignScreenState extends State<CampaignScreen> {
                       return Text("Loading.....");
                     }
                   }),
-
-              // SizedBox(
-              //   height: size.height * 20,
-              //   // color: Colors.red,
-              //   width: double.infinity,
-              //   child: ClipRRect(
-              //     borderRadius: BorderRadius.circular(8.0),
-              //     child: Image.network(
-              //       model.campaigns![1].image.toString(),
-              //       // "https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/2a0c5b96495497.5eaff786630f7.gif",
-              //       fit: BoxFit.cover,
-              //     ),
-              //   ),
-              // ),
-              // whitespace(context, 1.8, 0),
-              // Container(
-              //   alignment: Alignment.center,
-              //   // margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-              //   height: size.height * 20,
-              //   width: double.infinity,
-              //   decoration: BoxDecoration(
-              //     borderRadius: BorderRadius.circular(10),
-              //     color: Colors.brown,
-              //   ),
-              //   child: RichText(
-              //       text: TextSpan(children: <TextSpan>[
-              //     TextSpan(
-              //         text: "Black Friday",
-              //         style: TextStyle(
-              //           color: Colors.white,
-              //           fontSize: size.width * 10,
-              //           fontWeight: FontWeight.w600,
-              //           fontStyle: FontStyle.italic,
-              //         )),
-              //     TextSpan(
-              //         text: "\nLimited for a few days!!!",
-              //         style: TextStyle(
-              //           color: Colors.white.withOpacity(0.88888),
-              //           fontSize: size.width * 5,
-              //           fontWeight: FontWeight.w600,
-              //         )),
-              //   ])),
-              // ),
-              // whitespace(context, 1.8, 0),
-              // SizedBox(
-              //   height: size.height * 20,
-              //   // color: Colors.red,
-              //   width: double.infinity,
-              //   child: ClipRRect(
-              //     borderRadius: BorderRadius.circular(8.0),
-              //     child: Image.network(
-              //       "https://thumbs.gfycat.com/BarrenOptimisticJapanesebeetle-size_restricted.gif",
-              //       fit: BoxFit.cover,
-              //     ),
-              //   ),
-              // ),
-              // whitespace(context, 1.8, 0),
-              // Container(
-              //   alignment: Alignment.center,
-              //   // margin: const EdgeInsets.fromLTRB(0, 10, 10, 10),
-              //   height: size.height * 30,
-              //   width: double.infinity,
-              //   decoration: BoxDecoration(
-              //     borderRadius: BorderRadius.circular(10),
-              //     color: const Color(0xff6675D2),
-              //   ),
-              //   child: RichText(
-              //       text: TextSpan(children: <TextSpan>[
-              //     TextSpan(
-              //         text: "50% off",
-              //         style: TextStyle(
-              //           color: Colors.white,
-              //           fontSize: size.width * 10,
-              //           fontWeight: FontWeight.w600,
-              //         )),
-              //     TextSpan(
-              //       text: "\non all products",
-              //       style: TextStyle(
-              //         color: Colors.white.withOpacity(0.88888),
-              //         fontSize: size.width * 5,
-              //         fontWeight: FontWeight.w600,
-              //       ),
-              //     ),
-              //   ])),
-              // ),
             ],
           ),
         ),
@@ -174,16 +89,16 @@ class _CampaignScreenState extends State<CampaignScreen> {
     );
   }
 
-  Future<SliderModel> getSliders() async {
+  Future<AnotherCampaignsModel> getSliders() async {
     final response =
-        await http.get(Uri.parse('https://muglimart.com/api/v1/slider'));
+        await http.get(Uri.parse('https://muglimart.com/api/v1/campaigns'));
 
     var data = jsonDecode(response.body.toString());
 
     if (response.statusCode == 200) {
-      return SliderModel.fromJson(data);
+      return AnotherCampaignsModel.fromJson(data);
     } else {
-      return SliderModel.fromJson(data);
+      return AnotherCampaignsModel.fromJson(data);
     }
   }
 }

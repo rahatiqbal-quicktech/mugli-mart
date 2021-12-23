@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:muglimart_quicktech/Models/Categories.dart';
 import 'package:muglimart_quicktech/Models/SeacrhResultModel.dart';
 import 'package:muglimart_quicktech/Screens/searchresultscreen.dart';
 import 'package:muglimart_quicktech/Widgets/afewwidgets.dart';
@@ -74,24 +75,34 @@ class _SearchScreenState extends State<SearchScreen> {
                     color: Colors.grey.shade200,
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    itemCount: 5,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Category $index"),
-                            const Divider(),
-                          ],
-                        ),
-                      );
-                    },
-                  ))
+                  child: FutureBuilder<Categories>(
+                      future: getCategoryList(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            shrinkWrap: true,
+                            itemCount: 5,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(snapshot
+                                        .data!.categories![index].catname
+                                        .toString()),
+                                    const Divider(),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                        } else {
+                          return Text("Loading.....");
+                        }
+                      }))
             ],
           ),
         ),
@@ -119,6 +130,19 @@ class _SearchScreenState extends State<SearchScreen> {
       }
     } catch (e) {
       print(e);
+    }
+  }
+
+  Future<Categories> getCategoryList() async {
+    final response =
+        await http.get(Uri.parse('https://muglimart.com/api/v1/category'));
+
+    var data = jsonDecode(response.body.toString());
+
+    if (response.statusCode == 200) {
+      return Categories.fromJson(data);
+    } else {
+      return Categories.fromJson(data);
     }
   }
 }

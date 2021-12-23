@@ -98,7 +98,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   },
                   child: Text(
                     "Update",
-                    style: TextStyle(color: basiccolor, fontSize: 23),
+                    style: TextStyle(color: LogoColor, fontSize: 23),
                   ),
                 ),
               ),
