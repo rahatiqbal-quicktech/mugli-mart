@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:muglimart_quicktech/Screens/categoriesscreen.dart';
+import 'package:muglimart_quicktech/Screens/edit%20profile%20screen/editprofilescreen.dart';
+import 'package:muglimart_quicktech/Screens/homescreen.dart';
+import 'package:muglimart_quicktech/Screens/profilescreen.dart';
 import 'package:muglimart_quicktech/Utilities/colors.dart';
 
 int? selectedindex;
@@ -184,22 +187,34 @@ AppBar blackappbar(BuildContext context, var size) {
                 builder: (context) {
                   return Wrap(children: [
                     Column(
-                      children: const [
+                      children: [
                         ListTile(
                           title: Text("Categories"),
                           leading: Icon(Icons.category_outlined),
+                          onTap: () {
+                            Get.to(CategoriesScreen());
+                          },
                         ),
                         ListTile(
                           title: Text("Profile"),
                           leading: Icon(Icons.photo),
+                          onTap: () {
+                            Get.to(ProfileScreen());
+                          },
                         ),
                         ListTile(
-                          title: Text("Settings"),
+                          title: Text("Change Details"),
                           leading: Icon(Icons.settings),
+                          onTap: () {
+                            Get.to(EditProfileScreen());
+                          },
                         ),
                         ListTile(
                           title: Text("Logout"),
                           leading: Icon(Icons.logout_sharp),
+                          onTap: () {
+                            Get.offAll(HomeScreen());
+                          },
                         ),
                       ],
                     ),

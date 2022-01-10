@@ -1,8 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:muglimart_quicktech/Screens/trackresultscreen.dart';
 import 'package:muglimart_quicktech/Utilities/colors.dart';
 import 'package:muglimart_quicktech/Widgets/afewwidgets.dart';
 import 'package:muglimart_quicktech/Widgets/thebottomnavbar.dart';
+import 'package:http/http.dart' as http;
 
 class TrackOrderScreen extends StatefulWidget {
   const TrackOrderScreen({Key? key}) : super(key: key);
@@ -36,7 +41,7 @@ class _TrackOrderScreenState extends State<TrackOrderScreen> {
                   ),
                   child: TextFormField(
                     controller: trackidController,
-                    keyboardType: TextInputType.visiblePassword,
+                    keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                         contentPadding:
                             const EdgeInsets.fromLTRB(20, 15, 20, 15),
@@ -60,12 +65,28 @@ class _TrackOrderScreenState extends State<TrackOrderScreen> {
                       backgroundColor: basiccolor,
                       onSurface: Colors.grey,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => TrackResultScreen(
+                                  id: trackidController.text)));
+                    },
                   ),
                 )
               ],
             ),
           ),
         ));
+  }
+
+  void TrackOrder(String trackid) async {
+    http.Response response = await http.post(
+        Uri.parse("https://muglimart.com/api/v1/order/track"),
+        body: {'trackId': trackid});
+
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
+    } else {}
   }
 }

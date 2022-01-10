@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -7,6 +8,7 @@ import 'package:ionicons/ionicons.dart';
 import 'package:muglimart_quicktech/Models/Categories.dart';
 import 'package:muglimart_quicktech/Models/Product.dart';
 import 'package:muglimart_quicktech/Models/RecommendedModel.dart';
+import 'package:muglimart_quicktech/Models/RecommendedProductsModel.dart';
 import 'package:muglimart_quicktech/Models/SliderModel.dart';
 import 'package:muglimart_quicktech/Screens/productdetailsscreen.dart';
 import 'package:muglimart_quicktech/Utilities/colors.dart';
@@ -86,7 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             //         .toString()));
                           });
                     } else {
-                      return CircularProgressIndicator();
+                      return LinearProgressIndicator();
                     }
                   }),
 
@@ -255,7 +257,7 @@ class _HomeScreenState extends State<HomeScreen> {
               //       ),
               //       itemBuilder: (context, index) => anotheritemcard(size)),
               // ),
-              FutureBuilder<RecommendedModel>(
+              FutureBuilder<RecommendedProductsModel>(
                   future: getRecommended(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
@@ -269,21 +271,18 @@ class _HomeScreenState extends State<HomeScreen> {
                               // crossAxisSpacing: 5,
                               childAspectRatio: 0.77,
                             ),
-                            itemCount: snapshot.data!.products!.data!.length,
+                            itemCount: snapshot.data!.products!.length,
                             itemBuilder: (context, index) => anotheritemcard(
                                 size,
                                 "https://www.muglimart.com/" +
-                                    snapshot.data!.products!.data![index]
-                                        .proImage!.image
+                                    snapshot
+                                        .data!.products![index].proImage!.image
                                         .toString(),
-                                snapshot
-                                    .data!.products!.data![index].productname
+                                snapshot.data!.products![index].productname
                                     .toString(),
-                                snapshot.data!.products!.data![index]
-                                    .productnewprice
+                                snapshot.data!.products![index].productnewprice
                                     .toString(),
-                                snapshot.data!.products!.data![index].id
-                                    .toString())),
+                                snapshot.data!.products![index].id.toString())),
                       );
                     } else {
                       return Text("Loading.....");
@@ -374,16 +373,16 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Future<RecommendedModel> getRecommended() async {
-    final response = await http
-        .get(Uri.parse('https://muglimart.com/api/v1/category-products/1'));
+  Future<RecommendedProductsModel> getRecommended() async {
+    final response =
+        await http.get(Uri.parse('https://muglimart.com/api/v1/all-product'));
 
     var data = jsonDecode(response.body.toString());
 
     if (response.statusCode == 200) {
-      return RecommendedModel.fromJson(data);
+      return RecommendedProductsModel.fromJson(data);
     } else {
-      return RecommendedModel.fromJson(data);
+      return RecommendedProductsModel.fromJson(data);
     }
   }
 

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
@@ -347,9 +348,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     ],
                   );
                 } else {
-                  return Align(
-                      alignment: Alignment.center,
-                      child: CircularProgressIndicator());
+                  return Container(
+                    // height: double.infinity,
+                    height: size.height * 80,
+                    alignment: Alignment.center,
+                    child: CupertinoActivityIndicator(
+                      radius: 20,
+                    ),
+                  );
                 }
               })),
     );

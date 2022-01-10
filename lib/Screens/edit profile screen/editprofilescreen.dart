@@ -59,34 +59,34 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 inputType: TextInputType.number,
               ),
               whitespace(context, 2, 0),
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: basiccolor,
-                    width: 0.58,
-                  ),
-                  color: Colors.white.withOpacity(0.8),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: TextFormField(
-                  controller: addressController,
-                  keyboardType: TextInputType.multiline,
-                  minLines: 2, //Normal textInputField will be displayed
-                  maxLines: 5, // when user presses enter it will adapt to it
-                  decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-                      border: InputBorder.none,
-                      prefixIcon: Icon(
-                        Icons.location_city,
-                        color: basiccolor,
-                      ),
-                      hintStyle: TextStyle(
-                        color: Colors.grey.withOpacity(.8),
-                      ),
-                      hintText: "Address"),
-                ),
-              ),
-              whitespace(context, 3.5, 0),
+              // Container(
+              //   decoration: BoxDecoration(
+              //     border: Border.all(
+              //       color: basiccolor,
+              //       width: 0.58,
+              //     ),
+              //     color: Colors.white.withOpacity(0.8),
+              //     borderRadius: BorderRadius.circular(8),
+              //   ),
+              //   child: TextFormField(
+              //     controller: addressController,
+              //     keyboardType: TextInputType.multiline,
+              //     minLines: 2, //Normal textInputField will be displayed
+              //     maxLines: 5, // when user presses enter it will adapt to it
+              //     decoration: InputDecoration(
+              //         contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+              //         border: InputBorder.none,
+              //         prefixIcon: Icon(
+              //           Icons.location_city,
+              //           color: basiccolor,
+              //         ),
+              //         hintStyle: TextStyle(
+              //           color: Colors.grey.withOpacity(.8),
+              //         ),
+              //         hintText: "Address"),
+              //   ),
+              // ),
+              // whitespace(context, 3.5, 0),
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(

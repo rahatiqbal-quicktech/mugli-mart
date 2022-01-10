@@ -1,45 +1,42 @@
-class MyOrders {
-  List<Customerorders>? customerorders;
+class TrackOrderModel {
+  Trackorder? trackorder;
 
-  MyOrders({this.customerorders});
+  TrackOrderModel({this.trackorder});
 
-  MyOrders.fromJson(Map<String, dynamic> json) {
-    if (json['customerorders'] != null) {
-      customerorders = <Customerorders>[];
-      json['customerorders'].forEach((v) {
-        customerorders!.add(new Customerorders.fromJson(v));
-      });
-    }
+  TrackOrderModel.fromJson(Map<String, dynamic> json) {
+    trackorder = json['trackorder'] != null
+        ? new Trackorder.fromJson(json['trackorder'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.customerorders != null) {
-      data['customerorders'] =
-          this.customerorders!.map((v) => v.toJson()).toList();
+    if (this.trackorder != null) {
+      data['trackorder'] = this.trackorder!.toJson();
     }
     return data;
   }
 }
 
-class Customerorders {
+class Trackorder {
   int? orderIdPrimary;
   int? customerId;
   String? ordertrack;
   int? orderTotal;
   int? cshippingfee;
-  int? cdiscount;
-  String? offertype;
+  dynamic cdiscount;
+  dynamic offertype;
   int? additionalshipping;
   int? shippingId;
   int? orderSubtotal;
   int? totalproductpoint;
-  int? usemypoint;
+  dynamic usemypoint;
   String? orderStatus;
   String? createdAt;
   String? updatedAt;
+  Status? status;
 
-  Customerorders(
+  Trackorder(
       {this.orderIdPrimary,
       this.customerId,
       this.ordertrack,
@@ -54,9 +51,10 @@ class Customerorders {
       this.usemypoint,
       this.orderStatus,
       this.createdAt,
-      this.updatedAt});
+      this.updatedAt,
+      this.status});
 
-  Customerorders.fromJson(Map<String, dynamic> json) {
+  Trackorder.fromJson(Map<String, dynamic> json) {
     orderIdPrimary = json['orderIdPrimary'];
     customerId = json['customerId'];
     ordertrack = json['ordertrack'];
@@ -72,6 +70,8 @@ class Customerorders {
     orderStatus = json['orderStatus'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
+    status =
+        json['status'] != null ? new Status.fromJson(json['status']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -89,6 +89,37 @@ class Customerorders {
     data['totalproductpoint'] = this.totalproductpoint;
     data['usemypoint'] = this.usemypoint;
     data['orderStatus'] = this.orderStatus;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
+    if (this.status != null) {
+      data['status'] = this.status!.toJson();
+    }
+    return data;
+  }
+}
+
+class Status {
+  int? id;
+  String? name;
+  String? slug;
+  String? createdAt;
+  String? updatedAt;
+
+  Status({this.id, this.name, this.slug, this.createdAt, this.updatedAt});
+
+  Status.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    slug = json['slug'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['name'] = this.name;
+    data['slug'] = this.slug;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
     return data;
