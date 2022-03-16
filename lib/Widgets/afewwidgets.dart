@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:muglimart_quicktech/Screens/categoriesscreen.dart';
-import 'package:muglimart_quicktech/Screens/edit%20profile%20screen/editprofilescreen.dart';
-import 'package:muglimart_quicktech/Screens/homescreen.dart';
-import 'package:muglimart_quicktech/Screens/profilescreen.dart';
+import 'package:muglimart_quicktech/features/category/categoriesscreen.dart';
+import 'package:muglimart_quicktech/features/edit_profile/editprofilescreen.dart';
+import 'package:muglimart_quicktech/features/home/homescreen.dart';
+import 'package:muglimart_quicktech/features/profile/profilescreen.dart';
 import 'package:muglimart_quicktech/Utilities/colors.dart';
 
 int? selectedindex;

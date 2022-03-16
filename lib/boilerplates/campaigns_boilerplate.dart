@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:muglimart_quicktech/Controllers/campaignController.dart';
-import 'package:muglimart_quicktech/Models/CampaignModel.dart';
+import 'package:muglimart_quicktech/features/campaigns/campaignController.dart';
+import 'package:muglimart_quicktech/features/campaigns/CampaignModel.dart';
 
 class campaign_boilerplate extends StatefulWidget {
   const campaign_boilerplate({Key? key}) : super(key: key);

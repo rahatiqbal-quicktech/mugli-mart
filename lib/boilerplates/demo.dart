@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:muglimart_quicktech/Controllers/CategoriesController.dart';
-import 'package:muglimart_quicktech/Controllers/campaignController.dart';
-import 'package:muglimart_quicktech/Models/CampaignModel.dart';
-import 'package:muglimart_quicktech/Models/Categories.dart';
+import 'package:muglimart_quicktech/features/category/CategoriesController.dart';
+import 'package:muglimart_quicktech/features/campaigns/campaignController.dart';
+import 'package:muglimart_quicktech/features/campaigns/CampaignModel.dart';
+import 'package:muglimart_quicktech/features/category/Categories.dart';
 import 'package:http/http.dart' as http;
 import 'package:muglimart_quicktech/Models/SliderModel.dart';
 import 'package:muglimart_quicktech/Models/categorylist.dart';

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:muglimart_quicktech/Screens/cartscreen.dart';
-import 'package:muglimart_quicktech/Screens/productdetailsscreen.dart';
+import 'package:muglimart_quicktech/features/cart/cartscreen.dart';
+import 'package:muglimart_quicktech/features/product_details/productdetailsscreen.dart';
 import 'package:muglimart_quicktech/main.dart';
 
 productmodal(BuildContext context, String productid) {

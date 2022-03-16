@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:muglimart_quicktech/Screens/campaignsscreen.dart';
-import 'package:muglimart_quicktech/Screens/cartscreen.dart';
-import 'package:muglimart_quicktech/Screens/homescreen.dart';
-import 'package:muglimart_quicktech/Screens/searchscreen.dart';
-import 'package:muglimart_quicktech/Screens/wishlistscreen.dart';
+import 'package:muglimart_quicktech/features/campaigns/campaignsscreen.dart';
+import 'package:muglimart_quicktech/features/cart/cartscreen.dart';
+import 'package:muglimart_quicktech/features/home/homescreen.dart';
+import 'package:muglimart_quicktech/features/search/searchscreen.dart';
+import 'package:muglimart_quicktech/features/wish_list/wishlistscreen.dart';
 import 'package:muglimart_quicktech/Widgets/afewwidgets.dart';
 
 class TheBottomNavBar extends StatefulWidget {

@@ -1,4 +1,4 @@
-package com.example.muglimart_quicktech
+package com.quicktech.muglimart_quicktech
 
 import io.flutter.embedding.android.FlutterActivity
 

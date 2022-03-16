@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:muglimart_quicktech/Models/RecommendedModel.dart';
+import 'package:muglimart_quicktech/features/recommended_prdoucts/RecommendedModel.dart';
 import 'package:muglimart_quicktech/Widgets/afewwidgets.dart';
 
 class recommended_demo extends StatefulWidget {

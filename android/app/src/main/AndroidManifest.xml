@@ -1,10 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.muglimart_quicktech">
+    package="com.quicktech.muglimart_quicktech">
     <!-- Required to fetch data from the internet. -->
 <uses-permission android:name="android.permission.INTERNET" />
 
    <application
-        android:label="muglimart_quicktech"
+        android:label="Mugli Mart"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

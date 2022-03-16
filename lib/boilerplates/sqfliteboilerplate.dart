@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:muglimart_quicktech/SQLHelper.dart';
+import 'package:muglimart_quicktech/sqflite/SQLHelper.dart';
 import 'package:muglimart_quicktech/Utilities/colors.dart';
 import 'package:muglimart_quicktech/Widgets/afewwidgets.dart';
 import 'package:muglimart_quicktech/main.dart';
 
-import '../HiveModel.dart';
+import '../hive_database/HiveModel.dart';
 
 class SqfliteBoilerplate extends StatefulWidget {
   const SqfliteBoilerplate({Key? key}) : super(key: key);
