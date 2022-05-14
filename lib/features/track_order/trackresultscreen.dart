@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:muglimart_quicktech/features/track_order/TrackOrderModel.dart';
 import 'package:muglimart_quicktech/Widgets/afewwidgets.dart';
 import 'package:muglimart_quicktech/Widgets/thebottomnavbar.dart';
@@ -36,33 +37,64 @@ class _TrackResultScreenState extends State<TrackResultScreen> {
                   if (snapshot.hasData) {
                     return Container(
                       padding: EdgeInsets.all(15),
-                      height: size.height * 30,
+                      // height: size.height * 30,
                       width: double.infinity,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: Colors.white,
+                        // color: Colors.white,
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           whitespace(context, 3.8, 0),
-                          Text(
-                            "Tracking ID :  ${widget.id}",
-                            style: GoogleFonts.openSans(
-                                fontWeight: FontWeight.w600),
+                          Container(
+                            color: Colors.white,
+                            child: ListTile(
+                              leading: Icon(
+                                Ionicons.trail_sign,
+                              ),
+                              title: Text(
+                                "Tracking ID :  ${widget.id}",
+                                style: GoogleFonts.openSans(
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                          ),
+                          whitespace(context, 1, 0),
+                          Container(
+                            color: Colors.white,
+                            child: ListTile(
+                                leading: Icon(
+                                  Ionicons.cash_outline,
+                                ),
+                                title: Text(
+                                  "Order Total :  ${snapshot.data!.trackorder!.orderTotal} tk",
+                                  style: GoogleFonts.openSans(
+                                      fontWeight: FontWeight.bold),
+                                )),
                           ),
                           whitespace(context, 2, 0),
                           Text(
                             "Status",
                             style: GoogleFonts.openSans(),
                           ),
-                          Text(
-                            snapshot.data!.trackorder!.status!.name.toString(),
-                            style: GoogleFonts.openSans(
-                              fontSize: 26,
-                              fontWeight: FontWeight.bold,
+                          whitespace(context, 1, 0),
+                          Container(
+                            color: Colors.white,
+                            child: ListTile(
+                              leading: Icon(
+                                Ionicons.information_circle,
+                              ),
+                              title: Text(
+                                snapshot.data!.trackorder!.status!.name
+                                    .toString(),
+                                style: GoogleFonts.openSans(
+                                  fontSize: 26,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
-                          )
+                          ),
                         ],
                       ),
                     );

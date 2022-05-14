@@ -1,7 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:muglimart_quicktech/all_controllers/allControllers.dart';
 import 'package:muglimart_quicktech/features/campaigns/anotherCampaignController.dart';
 import 'package:muglimart_quicktech/features/campaigns/AnotherCampaignModel.dart';
 import 'package:muglimart_quicktech/Widgets/afewwidgets.dart';
@@ -15,7 +18,7 @@ class CampaignScreen extends StatefulWidget {
   _CampaignScreenState createState() => _CampaignScreenState();
 }
 
-class _CampaignScreenState extends State<CampaignScreen> {
+class _CampaignScreenState extends State<CampaignScreen> with AllControllers {
   // var campaigncontroller = CampaignController();
   AnotherCampaignsModel? model;
 
@@ -43,42 +46,43 @@ class _CampaignScreenState extends State<CampaignScreen> {
       appBar: myappbar(context, size, Colors.white),
       bottomNavigationBar: const TheBottomNavBar(),
       body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(8, 5, 8, 0),
           child: Column(
             children: [
-              FutureBuilder<AnotherCampaignsModel>(
-                  future: getSliders(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: snapshot.data!.campaigns!.length,
-                          itemBuilder: (context, index) {
-                            return Container(
-                              margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                              height: size.height * 20,
-                              // color: Colors.red,
-                              width: double.infinity,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(8.0),
-                                child: Image.network(
-                                  baseUrl +
-                                      snapshot.data!.campaigns![index].image
-                                          .toString(),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            );
+              Obx(() {
+                if (sliderController.sliders.length != 0) {
+                  return ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: sliderController.sliders.length,
+                      itemBuilder: (context, index) {
+                        final temp = sliderController.sliders[index];
+                        return Container(
+                          margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                          // height: size.height * 20,
+                          // color: Colors.red,
+                          // width: double.infinity,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8.0),
+                            child: Image.network(
+                              baseUrl + temp.image.toString(),
+                              // fit: BoxFit.cover,
+                            ),
+                          ),
+                        );
 
-                            // Center(
-                            //     child: Text(snapshot.data!.sliders![index].image
-                            //         .toString()));
-                          });
-                    } else {
-                      return Text("Loading.....");
-                    }
-                  }),
+                        // Center(
+                        //     child: Text(snapshot.data!.sliders![index].image
+                        //         .toString()));
+                      });
+                } else {
+                  return Center(
+                    child: CupertinoActivityIndicator(),
+                  );
+                }
+              }),
+              whitespace(context, 5, 0),
             ],
           ),
         ),

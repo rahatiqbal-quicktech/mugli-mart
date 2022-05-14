@@ -2,10 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:muglimart_quicktech/features/auth/authControllers.dart';
 import 'package:muglimart_quicktech/Utilities/colors.dart';
 import 'package:http/http.dart' as http;
+import 'package:muglimart_quicktech/features/loading_dialog/loading_dialog.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -47,20 +47,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 // color: Colors.red,
                 child: Image.asset('assets/images/banner.png'),
               ),
-
-              //   Text(
-              //     "MugliMart",
-              //     style: GoogleFonts.lobster(
-              //         textStyle: TextStyle(
-              //       color: Colors.white,
-              //       fontSize: size.height * 6,
-              //     )),
-              //     // TextStyle(
-              //     //   color: Colors.white,
-              //     //   fontSize: size.height * 6,
-              //     //   fontStyle: FontStyle.italic,
-              //     // ),
-              //   ),
             ), //TODO for logo
             SizedBox(
               height: size.height * 5,
@@ -95,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       child: TextFormField(
                         controller: phoneemailController,
-                        keyboardType: TextInputType.emailAddress,
+                        keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                             contentPadding:
                                 const EdgeInsets.fromLTRB(20, 15, 20, 15),
@@ -163,6 +149,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               MaterialStateProperty.all(EdgeInsets.all(8.0))),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
+                          LoadingDialog().show(context);
                           printfunction();
                           auth.login(phoneemailController.text,
                               passwordController.text);
@@ -222,7 +209,6 @@ class _LoginScreenState extends State<LoginScreen> {
         var token = data['token'];
         print(data['token'].toString());
         authStorage.write('LoginToken', data['token']);
-        print("abc");
       } else {
         var data = jsonDecode(response.body.toString());
         print(data['error']);

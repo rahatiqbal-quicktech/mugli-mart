@@ -1,0 +1,32 @@
+FutureBuilder<SliderModel>(
+                  future: getSliders(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: 1,
+                          itemBuilder: (context, index) {
+                            return Container(
+                              margin: EdgeInsets.fromLTRB(0, 5, 10, 5),
+                              // height: size.height * 20,
+                              // color: Colors.red,
+                              // width: double.infinity,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8.0),
+                                child: Image.network(
+                                  baseUrl +
+                                      snapshot.data!.sliders![0].image
+                                          .toString(),
+                                  // fit: BoxFit.cover,
+                                ),
+                              ),
+                            );
+
+                            // Center(
+                            //     child: Text(snapshot.data!.sliders![index].image
+                            //         .toString()));
+                          });
+                    } else {
+                      return LinearProgressIndicator();
+                    }
+                  }),

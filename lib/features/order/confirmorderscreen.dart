@@ -1,23 +1,38 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:muglimart_quicktech/features/loading_dialog/loading_dialog.dart';
 import 'package:muglimart_quicktech/features/order/ConfirmOrderModel.dart';
+import 'package:muglimart_quicktech/features/order/models/shipping_area_model.dart';
+import 'package:muglimart_quicktech/features/order/models/shipping_charge_model.dart';
+import 'package:muglimart_quicktech/features/order/models/shipping_districts_model.dart';
 import 'package:muglimart_quicktech/features/order/ordersuccessscreen.dart';
 import 'package:muglimart_quicktech/Utilities/colors.dart';
 import 'package:muglimart_quicktech/Widgets/afewwidgets.dart';
 import 'package:muglimart_quicktech/Widgets/thebottomnavbar.dart';
+import 'package:muglimart_quicktech/features/order/service/get_shipping_address_service.dart';
+import 'package:muglimart_quicktech/features/order/service/save_shipping_address_service.dart';
+import 'package:muglimart_quicktech/features/order/service/shipping_address_service.dart';
 import 'package:muglimart_quicktech/main.dart';
 
 import '../edit_profile/editprofile_textfield.dart';
 import 'package:http/http.dart' as http;
 
+import 'widgets/bottom_order_details_widget.dart';
+
 class ConfirmOrderScreen extends StatefulWidget {
-  const ConfirmOrderScreen({Key? key}) : super(key: key);
+  String? phoneNumber;
+  String? fullName;
+  final double? totalPrice;
+  ConfirmOrderScreen(
+      {this.phoneNumber, this.fullName, this.totalPrice, Key? key})
+      : super(key: key);
 
   @override
   _ConfirmOrderScreenState createState() => _ConfirmOrderScreenState();
@@ -25,12 +40,41 @@ class ConfirmOrderScreen extends StatefulWidget {
 
 class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
   @override
+  void initState() {
+    super.initState();
+    setValue();
+    fetchCartProducts();
+    phoneController.text = widget.phoneNumber!;
+    // fullNameController.text = widget.fullName!;
+    ShippingAddressService().getDistricts().then((value) {
+      setState(() {
+        districts = value!.districts!;
+        temp = false;
+      });
+    });
+  }
+
+  bool temp = false;
+  final _formKey = GlobalKey<FormState>();
+  TextEditingController fullNameController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController additionalAddressController = TextEditingController();
+  TextEditingController couponController = TextEditingController();
+  TextEditingController stateAddressController = TextEditingController();
+  TextEditingController houseAddressController = TextEditingController();
+  TextEditingController zipCodeController = TextEditingController();
+  String? shippingDistrict = "";
+  String? shippingArea = "";
+
+  List<District> districts = [];
+  List<Area>? area = <Area>[];
+  District? _selectDistrict;
+  Area? _selectArea;
+
+  @override
   Widget build(BuildContext context) {
     //
-    TextEditingController houseaddressController = TextEditingController();
-    TextEditingController phoneController = TextEditingController();
-    TextEditingController addressController = TextEditingController();
-    TextEditingController couponController = TextEditingController();
+
     Size size = MediaQuery.of(context).size / 100;
     //
     return Scaffold(
@@ -39,325 +83,445 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              whitespace(context, 3.5, 0),
-              Text(
-                "Set Order Details",
-                style: GoogleFonts.openSans(
-                  color: basiccolor,
-                  fontSize: 26,
-                ),
-              ),
-              whitespace(context, 2, 0),
-              EditProfileTextfield(
-                basiccolor: basiccolor,
-                controller: phoneController,
-                hinttext: "Enter Phone Number",
-                icon: Ionicons.call_outline,
-                inputType: TextInputType.text,
-              ),
-              whitespace(context, 2, 0),
-              EditProfileTextfield(
-                basiccolor: basiccolor,
-                controller: houseaddressController,
-                hinttext: "House Address",
-                icon: Ionicons.home_outline,
-                inputType: TextInputType.text,
-              ),
-              whitespace(context, 2, 0),
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: basiccolor,
-                    width: 0.58,
-                  ),
-                  color: Colors.white.withOpacity(0.8),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: TextFormField(
-                  controller: addressController,
-                  keyboardType: TextInputType.multiline,
-                  minLines: 2, //Normal textInputField will be displayed
-                  maxLines: 5, // when user presses enter it will adapt to it
-                  decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-                      border: InputBorder.none,
-                      prefixIcon: Icon(
-                        Ionicons.location_outline,
-                        color: basiccolor,
-                      ),
-                      hintStyle: TextStyle(
-                        color: Colors.grey.withOpacity(.8),
-                      ),
-                      hintText: "Full Address"),
-                ),
-              ),
-              whitespace(context, 2, 0),
-              EditProfileTextfield(
-                basiccolor: basiccolor,
-                controller: couponController,
-                hinttext: "Enter Coupon",
-                icon: Ionicons.color_wand_sharp,
-                inputType: TextInputType.text,
-              ),
-              whitespace(context, 2, 0),
-              Text(
-                "*Payment method is currently set as Cash On Delivery",
-                style: GoogleFonts.openSans(
-                  color: Colors.grey.shade800,
-                ),
-              ),
-              whitespace(context, 3.5, 0),
-              Align(
-                alignment: Alignment.center,
-                child: SizedBox(
-                  width: size.width * 50,
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                      // padding: MaterialStateProperty.all(EdgeInsets.all(8.0)),
-                      primary: LogoColor,
-                      backgroundColor: LogoColor,
-                      onSurface: Colors.grey,
-                    ),
-                    onPressed: () {
-                      confirmorder_fresh();
-                    },
-                    child: Text(
-                      "Proceed",
-                      style: TextStyle(color: Colors.white, fontSize: 23),
-                    ),
-                  ),
-                ),
-              ),
-              // Align(
-              //   alignment: Alignment.centerRight,
-              //   child: TextButton(
-              //     style: ButtonStyle(
-              //         padding: MaterialStateProperty.all(EdgeInsets.all(8.0))),
-              //     onPressed: () {
-              //       print("This is a list " + WishList.toString());
-              //     },
-              //     child: Text(
-              //       "print list",
-              //       style: TextStyle(color: basiccolor, fontSize: 23),
-              //     ),
-              //   ),
-              // ),
-            ],
+          child: Form(
+            key: _formKey,
+            child: FutureBuilder<SgippingChargeModel>(
+                future: GetShippingAddressService().getData(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    if (temp == true) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          whitespace(context, 3.5, 0),
+                          Text(
+                            "Set your address and contact.",
+                            style: GoogleFonts.openSans(
+                              color: basiccolor,
+                              fontSize: 20,
+                            ),
+                          ),
+                          whitespace(context, 3, 0),
+                          EditProfileTextfield(
+                            basiccolor: basiccolor,
+                            controller: fullNameController,
+                            hinttext: "Full Name",
+                            validationRequired: true,
+                            validatorText:
+                                "You have to provide a phone number.",
+                            icon: Ionicons.person,
+                            inputType: TextInputType.name,
+                          ),
+                          whitespace(context, 3, 0),
+                          EditProfileTextfield(
+                            basiccolor: basiccolor,
+                            controller: phoneController,
+                            hinttext: "Enter Phone Number",
+                            validationRequired: true,
+                            validatorText:
+                                "You have to provide a phone number.",
+                            icon: Ionicons.call_outline,
+                            inputType: TextInputType.phone,
+                          ),
+                          whitespace(context, 2, 0),
+                          Container(
+                            width: double.infinity,
+                            // MediaQuery.of(context).size.width / 5,
+                            padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Colors.grey,
+                                ),
+                                borderRadius: BorderRadius.circular(8)),
+                            // decoration: CustomDecoration().textFieldDecoration(),
+                            child: DropdownButtonFormField<District>(
+                              hint: Text(
+                                "Select District",
+                                style: TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.grey.withOpacity(.8)),
+                              ), // Not necessary for Option 1
+                              decoration: InputDecoration(
+                                enabledBorder: InputBorder.none,
+                              ),
+                              validator: (value) =>
+                                  value == null ? "Please select a zone" : null,
+                              isExpanded: true,
+                              value: _selectDistrict,
+                              onChanged: (District? newValue) async {
+                                setState(() {
+                                  _selectDistrict = newValue;
+                                  shippingDistrict = newValue?.name;
+                                });
+                                await setAreas(districtId: newValue?.id);
+                              },
+                              items: districts.map((District value) {
+                                return DropdownMenuItem<District>(
+                                  child: new Text(
+                                      value.name ?? "Name not available"),
+                                  value: value,
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                          whitespace(context, 2, 0),
+                          Container(
+                            width: double.infinity,
+                            // MediaQuery.of(context).size.width / 5,
+                            padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Colors.grey,
+                                ),
+                                borderRadius: BorderRadius.circular(8)),
+                            // decoration: CustomDecoration().textFieldDecoration(),
+                            child: DropdownButtonFormField<Area>(
+                                hint: Text(
+                                  "Select Area",
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      color: Colors.grey.withOpacity(.8)),
+                                ), // Not necessary for Option 1
+                                decoration: InputDecoration(
+                                  enabledBorder: InputBorder.none,
+                                ),
+                                validator: (value) => value == null
+                                    ? "Please select an area"
+                                    : null,
+                                isExpanded: true,
+                                value: _selectArea,
+                                onChanged: (Area? newValue) async {
+                                  setState(() {
+                                    _selectArea = newValue!;
+                                    shippingArea = newValue.area;
+                                  });
+
+                                  setShippingCharge(
+                                      charge: newValue?.shippingfee);
+                                  setConfirmOrderTotal();
+                                },
+                                items: area?.map((Area value) {
+                                  return DropdownMenuItem<Area>(
+                                    child: new Text(
+                                        value.area ?? "Name not available"),
+                                    value: value,
+                                  );
+                                }).toList()),
+                          ),
+                          whitespace(context, 2, 0),
+                          EditProfileTextfield(
+                            basiccolor: basiccolor,
+                            controller: stateAddressController,
+                            hinttext: "State Address",
+                            validationRequired: false,
+                            icon: Ionicons.compass,
+                            inputType: TextInputType.streetAddress,
+                          ),
+                          whitespace(context, 1, 0),
+                          EditProfileTextfield(
+                            basiccolor: basiccolor,
+                            controller: houseAddressController,
+                            hinttext: "House Address",
+                            validationRequired: true,
+                            validatorText: "House Address required",
+                            icon: Ionicons.compass_outline,
+                            inputType: TextInputType.streetAddress,
+                          ),
+                          whitespace(context, 1, 0),
+                          EditProfileTextfield(
+                            basiccolor: basiccolor,
+                            controller: zipCodeController,
+                            hinttext: "Zip Code",
+                            validationRequired: true,
+                            validatorText: "Zip Code field can't be empty",
+                            icon: Ionicons.code,
+                            inputType: TextInputType.streetAddress,
+                          ),
+                          whitespace(context, 2, 0),
+                          Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: basiccolor,
+                                width: 0.58,
+                              ),
+                              color: Colors.white.withOpacity(0.8),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: TextFormField(
+                              controller: additionalAddressController,
+                              keyboardType: TextInputType.multiline,
+                              minLines:
+                                  2, //Normal textInputField will be displayed
+                              maxLines:
+                                  5, // when user presses enter it will adapt to it
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'An address is required.';
+                                }
+                                return null;
+                              },
+                              decoration: InputDecoration(
+                                  contentPadding:
+                                      const EdgeInsets.fromLTRB(20, 15, 20, 15),
+                                  border: InputBorder.none,
+                                  prefixIcon: Icon(
+                                    Ionicons.location_outline,
+                                    color: basiccolor,
+                                  ),
+                                  hintStyle: TextStyle(
+                                    color: Colors.grey.withOpacity(.8),
+                                  ),
+                                  hintText: "Additional Address"),
+                            ),
+                          ),
+                          whitespace(context, 2, 0),
+                          EditProfileTextfield(
+                            basiccolor: basiccolor,
+                            controller: couponController,
+                            hinttext: "Enter Coupon",
+                            validationRequired: false,
+                            icon: Ionicons.color_wand_sharp,
+                            inputType: TextInputType.text,
+                          ),
+                          whitespace(context, 2, 0),
+                          BottomOrderDetailsWidget(
+                              shippingCharge: shippingCharge,
+                              orderTotal: widget.totalPrice),
+                          whitespace(context, 2, 0),
+                          Align(
+                            alignment: Alignment.center,
+                            child: SizedBox(
+                              width: double.infinity,
+                              child: TextButton(
+                                style: TextButton.styleFrom(
+                                  // padding: MaterialStateProperty.all(EdgeInsets.all(8.0)),
+                                  primary: LogoColor,
+                                  backgroundColor: LogoColor,
+                                  onSurface: Colors.grey,
+                                ),
+                                onPressed: () {
+                                  if (_formKey.currentState!.validate()) {
+                                    SaveShippingAddressService()
+                                        .saveShippingAddress(
+                                            name: fullNameController.text,
+                                            phone: phoneController.text,
+                                            houseAddress:
+                                                houseAddressController.text,
+                                            areaId: "31",
+                                            districtId: "1",
+                                            fullAddress: "test ",
+                                            stateAddress:
+                                                stateAddressController.text,
+                                            zipCode: zipCodeController.text);
+                                    confirmorder_fresh(
+                                        name: fullNameController.text,
+                                        phoneNumber: phoneController.text,
+                                        address:
+                                            "Test test test district test area",
+                                        // address:
+                                        //     "${houseAddressController.text} , ${stateAddressController.text} , ${shippingDistrict} , ${shippingArea} , ${zipCodeController.text} , ${additionalAddressController.text}",
+                                        coupon: couponController.text);
+                                  }
+                                  // print(cartProductsList);
+                                },
+                                child: Text(
+                                  "Confirm Order",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 23),
+                                ),
+                              ),
+                            ),
+                          ),
+                          whitespace(context, 2, 0),
+                        ],
+                      );
+                    } else {
+                      return Column(
+                        children: [
+                          whitespace(context, 2, 0),
+                          Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.grey.shade300),
+                              child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                        "Shipping Address : ${snapshot.data!.customer!.areaName}, ${snapshot.data!.customer!.districtName}"),
+                                    whitespace(context, 1, 0),
+                                    whitespace(context, 1, 0),
+                                    Text(
+                                      "Shipping fee : ${snapshot.data!.charge?.shippingfee}",
+                                      style: GoogleFonts.openSans(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ])),
+                          whitespace(context, 2, 0),
+                          Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.grey.shade300),
+                              child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                        "Name : ${snapshot.data!.customer!.name}"),
+                                    whitespace(context, 1, 0),
+                                    Text(
+                                        "Phone : ${snapshot.data!.customer!.phone}"),
+                                  ])),
+                          Align(
+                            alignment: Alignment.bottomRight,
+                            child: TextButton.icon(
+                                onPressed: () {
+                                  setState(() {
+                                    temp = !temp;
+                                  });
+                                },
+                                icon: Icon(Ionicons.pencil),
+                                label: Text("Edit")),
+                          ),
+                          whitespace(context, 2, 0),
+                          Align(
+                            alignment: Alignment.center,
+                            child: SizedBox(
+                              width: double.infinity,
+                              child: TextButton(
+                                style: TextButton.styleFrom(
+                                  // padding: MaterialStateProperty.all(EdgeInsets.all(8.0)),
+                                  primary: LogoColor,
+                                  backgroundColor: LogoColor,
+                                  onSurface: Colors.grey,
+                                ),
+                                onPressed: () {
+                                  confirmorder_fresh(
+                                      name: "test name",
+                                      phoneNumber: "01779565300",
+                                      address:
+                                          "Test test test district test area",
+                                      // address:
+                                      //     "${houseAddressController.text} , ${stateAddressController.text} , ${shippingDistrict} , ${shippingArea} , ${zipCodeController.text} , ${additionalAddressController.text}",
+                                      coupon: couponController.text);
+
+                                  // print(cartProductsList);
+                                },
+                                child: Text(
+                                  "Confirm Order",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 23),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    }
+                  } else
+                    return Column(
+                      children: [
+                        whitespace(context, 5, 0),
+                        Center(child: CupertinoActivityIndicator()),
+                      ],
+                    );
+                }),
           ),
         ),
       ),
     );
   }
 
-  List<Map<String, dynamic>> WishList = [
-    {
-      "product_id": 1,
-      "product_name": "japani silk sharee - deep jam",
-      "sellerid": 1,
-      "product_price": 1199,
-      "quantity": 1,
-      "product_size": "XL",
-      "product_color": "Red"
-    },
-    {
-      "product_id": 2,
-      "product_name": "jhum tower sarees for women blue tanjin tisha",
-      "sellerid": 1,
-      "product_price": 1099,
-      "quantity": 1,
-      "product_size": "M",
-      "product_color": "White"
-    }
-  ];
-  @override
-  void initState() {
-    print(WishList.toList());
-    super.initState();
-    // fetchwishlist();
+  Future setAreas({int? districtId}) async {
+    ShippingAreaModel? temp;
+    temp = await ShippingAddressService().getArea(districtId: "$districtId");
+    setState(() {
+      area = temp!.areas;
+    });
   }
 
-  // fetchwishlist() async {
-  //   List<Map<String, dynamic>> list = await sqlHelper.fetchProducts();
-  //   setState(() {
-  //     WishList = list;
-  //   });
-  // }
+  String? shippingCharge = "0";
+  int? shippingChargeInt;
+  setShippingCharge({String? charge}) {
+    setState(() {
+      shippingCharge = charge;
+      shippingChargeInt = int.parse(shippingCharge!);
+      confirmOrderTotal = (widget.totalPrice! + shippingChargeInt!);
+    });
+    print(shippingChargeInt);
+  }
+
+  double? confirmOrderTotal;
+  setConfirmOrderTotal() {
+    confirmOrderTotal = (widget.totalPrice! + shippingChargeInt!);
+    print(confirmOrderTotal);
+  }
+
+  List<Map<String, dynamic>> cartProductsList = [];
+
+  fetchCartProducts() async {
+    List<Map<String, dynamic>> list = await cartSql.fetchProducts();
+    setState(() {
+      cartProductsList = list;
+    });
+    print("from fetchCartProducts - $cartProductsList");
+  }
 
   final ForToken = GetStorage();
 
-  Future confirmorder(
-      String number, String house, String fulladd, String coup) async {
-    Map data = {
-      'cart': [
-        {
-          'product_id': 1,
-          'product_name': "japani silk sharee - deep jam",
-          'sellerid': 1,
-          'product_price': 1199,
-          'quantity': 1,
-          'product_size': "XL",
-          'product_color': "Red"
-        },
-        {
-          'product_id': 2,
-          'product_name': "jhum tower sarees for women blue tanjin tisha",
-          'sellerid': 1,
-          'product_price': 1099,
-          'quantity': 1,
-          'product_size': "M",
-          'product_color': "White"
-        }
-      ],
-      'name': 'Md. Zadu Mia',
-      'phone': '01742892725',
-      'district': "1",
-      'area': "5",
-      'stateaddress': "Road, 4/a",
-      'houseaddress': "Mirpur, Dhaka",
-      'fulladdress': "Mirpur, Dhaka",
-      'zipcode': "1212",
-      'totalprice': "1550",
-      'shippingfee': "80",
-      'discount': "50",
-      'additionalshipping': "50",
-      'couponcode': "mugilimartbijoy",
-      'totalproductpoint': "20",
-      'usemypoint': "20",
-      'paymentType': "cod"
-    };
-    Map anotherdata = {
-      "cart": [
-        {
-          "product_id": 1,
-          "product_name": "japani silk sharee - deep jam",
-          "sellerid": 1,
-          "product_price": 1199,
-          "quantity": 1,
-          "product_size": "XL",
-          "product_color": "Red"
-        },
-        {
-          "product_id": 2,
-          "product_name": "jhum tower sarees for women blue tanjin tisha",
-          "sellerid": 1,
-          "product_price": 1099,
-          "quantity": 1,
-          "product_size": "M",
-          "product_color": "White"
-        }
-      ],
-      "name": "Md. Zadu Mia",
-      "phone": "01742892725",
-      "district": "1",
-      "area": "5",
-      "stateaddress": "Road, 4/a",
-      "houseaddress": "Mirpur, Dhaka",
-      "fulladdress": "Mirpur, Dhaka",
-      "zipcode": "1212",
-      "totalprice": "1550",
-      "shippingfee": "80",
-      "discount": "50",
-      "additionalshipping": "50",
-      "couponcode": "mugilimartbijoy",
-      "totalproductpoint": "20",
-      "usemypoint": "20",
-      "paymentType": "cod"
-    };
-    dynamic token =
-        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvbXVnbGltYXJ0LmNvbVwvYXBpXC92MVwvY3VzdG9tZXJcL2xvZ2luIiwiaWF0IjoxNjQwMjMxNzQ5LCJleHAiOjE2NDAyMzUzNDksIm5iZiI6MTY0MDIzMTc0OSwianRpIjoicm9DbFdaVEdaSG82QktHRiIsInN1YiI6NSwicHJ2IjoiOGI0MjJlNmY2NTc5MzJiOGFlYmNiMWJmMWUzNTZkZDc2YTM2NWJmMiJ9.sNiwdu0iWz12ojfQa3Opvgnw8NiXOvE5LxtFOb2KPR8";
-    try {
-      http.Response response = await http.post(
-          Uri.parse("https://muglimart.com/api/v1/customer/order/save"),
-          body: jsonEncode(anotherdata),
-          //     {
-          //   'cart': [
-          //     {
-          //       'product_id': 1,
-          //       'product_name': "japani silk sharee - deep jam",
-          //       'sellerid': 1,
-          //       'product_price': 1199,
-          //       'quantity': 1,
-          //       'product_size': "XL",
-          //       'product_color': "Red"
-          //     },this i sthe processed data, add single cotation later
-          //     {
-          //       'product_id': 2,
-          //       'product_name': "jhum tower sarees for women blue tanjin tisha",
-          //       'sellerid': 1,
-          //       'product_price': 1099,
-          //       'quantity': 1,
-          //       'product_size': "M",
-          //       'product_color': "White"
-          //     }
-          //   ],
-          //   'name': "Rahat iqbal",
-          //   'phone': number,
-          //   'district': ' ',
-          //   'area': ' ',
-          //   'stateaddress': ' ',
-          //   'houseaddress': house,
-          //   'fulladdress': fulladd,
-          //   'zipcode': "1212",
-          //   'totalprice': "1550",
-          //   'shippingfee': "80",
-          //   'discount': "50",
-          //   'additionalshipping': "50",
-          //   'couponcode': coup,
-          //   'totalproductpoint': "20",
-          //   'usemypoint': "20",
-          //   'paymentType': "cod"
-          // },
-          headers: {
-            'Accept': "application/json",
-            'Authorization':
-                'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvbXVnbGltYXJ0LmNvbVwvYXBpXC92MVwvY3VzdG9tZXJcL2xvZ2luIiwiaWF0IjoxNjQwMjMxNzQ5LCJleHAiOjE2NDAyMzUzNDksIm5iZiI6MTY0MDIzMTc0OSwianRpIjoicm9DbFdaVEdaSG82QktHRiIsInN1YiI6NSwicHJ2IjoiOGI0MjJlNmY2NTc5MzJiOGFlYmNiMWJmMWUzNTZkZDc2YTM2NWJmMiJ9.sNiwdu0iWz12ojfQa3Opvgnw8NiXOvE5LxtFOb2KPR8',
-          });
-      log(response.body.toString());
-      print(response.statusCode);
-
-      var JsonData = json.decode(response.body);
-      log(response.toString());
-
-      ConfirmOrderModel confirmOrderModel =
-          ConfirmOrderModel.fromJson(JsonData);
-
-      if (confirmOrderModel.status == "success") {
-        log(response.toString());
-        print(confirmOrderModel.status.toString());
-        print(confirmOrderModel.order!.ordertrack.toString());
-
-        // Navigator.push(
-        //     context, MaterialPageRoute(builder: (context) => ProfileScreen()));
-      } else {
-        print(response.statusCode);
-        print("Not working ");
-      }
-    } catch (e) {
-      print(e);
-    }
+  var name;
+  var authenticationToken;
+  setValue() {
+    final temp = GetStorage();
+    setState(() {
+      name = temp.read('fullName');
+      authenticationToken = temp.read('token');
+    });
   }
 
-  Future confirmorder_fresh() async {
+  double? subTotal;
+  // double? totalPrice;
+
+  // fetchTotalPrice() async {
+  //   var temp = await cartSql.totalPrice();
+  //   setState(() {
+  //     totalPrice = temp;
+  //     subTotal = (totalPrice! + 80)!;
+  //   });
+  //   print("fetchTotalPrice - subtotal  = $subTotal");
+  // }
+
+  Future confirmorder_fresh(
+      {String? phoneNumber,
+      String? address,
+      String? coupon,
+      String? name}) async {
+    LoadingDialog().show(context);
     dynamic token =
-        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvbXVnbGltYXJ0LmNvbVwvYXBpXC92MVwvY3VzdG9tZXJcL2xvZ2luIiwiaWF0IjoxNjQwMjQ4MTUwLCJleHAiOjE2NDAyNTE3NTAsIm5iZiI6MTY0MDI0ODE1MCwianRpIjoiNTZDOWxENlgwckZZdDBqNyIsInN1YiI6NSwicHJ2IjoiOGI0MjJlNmY2NTc5MzJiOGFlYmNiMWJmMWUzNTZkZDc2YTM2NWJmMiJ9.OQI46tffvp6FTlTPM-QibZsDIXmnYHdmi_KjbxkTFO4";
+        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvbXVnbGltYXJ0LmNvbVwvYXBpXC92MVwvY3VzdG9tZXJcL2xvZ2luIiwiaWF0IjoxNjQ4NzA5MDkxLCJleHAiOjE2NTAyMjEwOTEsIm5iZiI6MTY0ODcwOTA5MSwianRpIjoiTVdrbnBGazh5TWdFZ29JUyIsInN1YiI6NCwicHJ2IjoiOGI0MjJlNmY2NTc5MzJiOGFlYmNiMWJmMWUzNTZkZDc2YTM2NWJmMiJ9.NCYt7gKIqimVRsR5WTlQb9qWqfScl0g5DJIuF9hbwl4";
+
     try {
       http.Response response = await http
           .post(Uri.parse("https://muglimart.com/api/v1/customer/order/save"),
               body: jsonEncode({
-                "cart": WishList,
-                'name': "Md. Zadu Mia",
-                "phone": "01742892725",
-                "district": "1",
-                "area": "5",
-                "stateaddress": "Road, 4/a",
-                "houseaddress": "Mirpur, Dhaka",
-                "fulladdress": "Mirpur, Dhaka",
-                "zipcode": "1212",
-                "totalprice": "1550",
-                "shippingfee": "80",
+                "cart": [
+                  {
+                    "product_id": 889,
+                    "product_name": "smart robotic sweeper machine mop",
+                    "sellerid": 10,
+                    "product_price": 1499.0,
+                    "quantity": 1
+                  }
+                ],
+                "name": "$name",
+                "phone": "$phoneNumber",
+                "fulladdress": "$address",
+                "totalprice": "$confirmOrderTotal",
+                "shippingfee": "$shippingChargeInt",
                 "discount": "50",
                 "additionalshipping": "50",
                 "couponcode": "mugilimartbijoy",
@@ -368,7 +532,7 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
               headers: {
             'Accept': "application/json",
             "Content-type": "application/json",
-            'Authorization': 'Bearer ${token}',
+            'Authorization': 'Bearer ${authenticationToken}',
           });
       log(response.body.toString());
       print(response.statusCode);
@@ -380,12 +544,14 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
           ConfirmOrderModel.fromJson(JsonData);
 
       if (confirmOrderModel.status == "success") {
+        LoadingDialog().dismiss();
         log(response.toString());
-        print(confirmOrderModel.status.toString());
-        print(confirmOrderModel.order!.ordertrack.toString());
-        Get.offAll(OrderSuccessScreen(
+        cartSql.clearCart();
+        Get.off(OrderSuccessScreen(
             OrderTrackId: confirmOrderModel.order!.ordertrack.toString()));
       } else {
+        LoadingDialog().dismiss();
+        Get.snackbar("Something Went Wrong.", "Please try again.");
         print(response.statusCode);
         print("Not working ");
       }

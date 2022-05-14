@@ -58,11 +58,6 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
                     ),
                   ),
                 ),
-                TextButton(
-                    onPressed: () {
-                      Get.to(ProfileScreen());
-                    },
-                    child: Text("Test Button"))
               ],
             ),
           )

@@ -1,4 +1,3 @@
-import 'package:get/get.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -22,7 +21,7 @@ class SQLHelper {
     String databasesPath = await getDatabasesPath();
     String databaseName = join(databasesPath, dbName);
     await openDatabase(databaseName,
-        version: 1, onCreate: _onCreate, onOpen: _onOpen);
+        version: 3, onCreate: _onCreate, onOpen: _onOpen);
   }
 
   Future<int> addProduct(String id, String productname, double productprice,

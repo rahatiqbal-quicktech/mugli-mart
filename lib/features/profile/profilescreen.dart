@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:muglimart_quicktech/Models/Usermodel.dart';
 import 'package:muglimart_quicktech/Widgets/afewwidgets.dart';
 import 'package:muglimart_quicktech/Widgets/thebottomnavbar.dart';
+import 'package:muglimart_quicktech/features/edit_profile/editprofilescreen.dart';
+import 'package:muglimart_quicktech/features/logout/logout.dart';
+import 'package:muglimart_quicktech/features/my_orders/myordersscreen.dart';
+import 'package:muglimart_quicktech/features/profile/widgets/another_profile_button.dart';
+import 'package:muglimart_quicktech/functions/get_saved_values.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -14,6 +21,23 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   Users usermodel = Users();
+  final tempGetStorage = GetStorage();
+  late int id;
+  var name;
+  var email;
+  var phoneNumber;
+  String? token;
+
+  @override
+  void initState() {
+    super.initState();
+    id = tempGetStorage.read('id');
+    name = tempGetStorage.read('fullName');
+    email = tempGetStorage.read('email');
+    phoneNumber = tempGetStorage.read('phoneNumber');
+    token = GetSavedValues().getToken();
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size / 100;
@@ -34,35 +58,69 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             whitespace(context, 2, 0),
             Text(
-              "User's Name",
+              "$name",
               style: GoogleFonts.openSans(
                   textStyle: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: size.height * 2.6,
               )),
             ),
-            Text(
-              usermodel.email,
-              style: GoogleFonts.openSans(
-                  textStyle: TextStyle(
-                fontWeight: FontWeight.w400,
-                fontSize: size.height * 1.8,
-              )),
-            ),
+            email == null
+                ? Container()
+                : Text(
+                    "$email",
+                    style: GoogleFonts.openSans(
+                        textStyle: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontSize: size.height * 1.8,
+                    )),
+                  ),
+            whitespace(context, 1, 0),
+            phoneNumber == null
+                ? Container()
+                : Text(
+                    "$phoneNumber",
+                    style: GoogleFonts.openSans(
+                        textStyle: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontSize: size.height * 1.8,
+                    )),
+                  ),
             whitespace(context, 3, 0),
-            profilebuttons(size, Ionicons.create_outline, "Edit Profile",
-                'EditProfileScreen'),
-            profilebuttons(size, Ionicons.cart_outline, "My Orders",
-                'UnderConstructionScreen'),
+
+            AnotherProfileButton(
+                buttonName: "Edit Profile",
+                icon: Ionicons.create_outline,
+                function: () {
+                  Get.to(() => EditProfileScreen(
+                        id: id,
+                        name: name,
+                        email: email,
+                        phoneNumber: phoneNumber,
+                      ));
+                },
+                size: size),
+            AnotherProfileButton(
+                buttonName: "My Orders",
+                icon: Ionicons.cart_outline,
+                function: () {
+                  Get.to(() => MyOrdersScreen(bearerToken: "$token"));
+                },
+                size: size),
             profilebuttons(size, Ionicons.gift_outline, "My Points",
                 'UnderConstructionScreen'),
-            profilebuttons(size, Ionicons.boat_outline, "Shipping Address",
-                'ShippingAdressScreen'),
+            // profilebuttons(size, Ionicons.boat_outline, "Shipping Address",
+            //     'ShippingAdressScreen'),
             profilebuttons(size, Ionicons.magnet_outline, "Track Order",
                 'TrackOrderScreen'),
             whitespace(context, 3, 0),
-            profilebuttons(size, Ionicons.log_out_outline, "Logout",
-                'UnderConstructionScreen'),
+            AnotherProfileButton(
+                buttonName: "Logout",
+                icon: Ionicons.log_out_outline,
+                function: () {
+                  LogOut().logOut();
+                },
+                size: size),
           ],
         ),
       ),

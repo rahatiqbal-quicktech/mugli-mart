@@ -2,13 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
-import 'package:muglimart_quicktech/features/auth/authControllers.dart';
 import 'package:muglimart_quicktech/features/auth/loginscreen.dart';
 import 'package:http/http.dart' as http;
 import 'package:muglimart_quicktech/Utilities/colors.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -224,41 +220,5 @@ class _SignUpScreenState extends State<SignUpScreen> {
     // } else {
     //   print(body);
     // }
-  }
-
-  Widget ShowToast() {
-    return AlertDialog(
-      title: const Text('AlertDialog Title'),
-      content: const Text(
-        'this is a demo alert diolog',
-        style: TextStyle(color: Colors.red),
-      ),
-      actions: <Widget>[
-        TextButton(
-          child: const Text('Approve'),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-      ],
-    );
-  }
-
-  showDialogue() {
-    return CupertinoAlertDialog(
-      title: const Text('AlertDialog Title'),
-      content: const Text(
-        'this is a demo alert diolog',
-        style: TextStyle(color: Colors.red),
-      ),
-      actions: <Widget>[
-        TextButton(
-          child: const Text('Approve'),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-      ],
-    );
   }
 }

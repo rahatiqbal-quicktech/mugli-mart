@@ -1,19 +1,20 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:muglimart_quicktech/all_controllers/allControllers.dart';
 import 'package:muglimart_quicktech/features/category/Categories.dart';
 import 'package:muglimart_quicktech/Models/Product.dart';
 import 'package:muglimart_quicktech/Models/SliderModel.dart';
-import 'package:muglimart_quicktech/features/product_details/productdetailsscreen.dart';
+import 'package:muglimart_quicktech/features/category_products/category_products_screen.dart';
+import 'package:muglimart_quicktech/features/home/slider/slider_widget.dart';
 import 'package:muglimart_quicktech/Utilities/colors.dart';
 import 'package:muglimart_quicktech/Widgets/afewwidgets.dart';
-import 'package:muglimart_quicktech/Widgets/bottomnavbar.dart';
 import 'package:muglimart_quicktech/Widgets/thebottomnavbar.dart';
 import 'package:http/http.dart' as http;
+import 'package:muglimart_quicktech/features/recommended_prdoucts/recommended_products_widget.dart';
 
 import '../recommended_prdoucts/RecommendedProductsModel.dart';
 
@@ -24,9 +25,17 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with AllControllers {
   final Product product = Product();
   int _selectedIndex = 0;
+  @override
+  void initState() {
+    super.initState();
+    // categoriesController.fetchCategories();
+    // sliderController.getSliders();
+    // recommendedProductsController.getRecommendedProducts();
+  }
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -40,17 +49,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: myappbar(context, size, Colors.white),
       bottomNavigationBar: const TheBottomNavBar(),
-
-      // Row(
-      //   children: <Widget>[
-      //     // navbar(context, Icons.home_outlined, true, 0),
-      //     BottomNavBar(context, Icons.home_outlined, 0),
-      //     BottomNavBar(context, Icons.search, 1),
-      //     BottomNavBar(context, Icons.lightbulb_outline_rounded, 2),
-      //     BottomNavBar(context, Icons.favorite_outline_outlined, 3),
-      //     BottomNavBar(context, Icons.shopping_bag_outlined, 4),
-      //   ],
-      // ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.only(
@@ -59,40 +57,10 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              FutureBuilder<SliderModel>(
-                  future: getSliders(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: 1,
-                          itemBuilder: (context, index) {
-                            return Container(
-                              margin: EdgeInsets.fromLTRB(0, 5, 10, 5),
-                              height: size.height * 20,
-                              // color: Colors.red,
-                              width: double.infinity,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(8.0),
-                                child: Image.network(
-                                  baseUrl +
-                                      snapshot.data!.sliders![0].image
-                                          .toString(),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            );
+              SliderWidget(),
 
-                            // Center(
-                            //     child: Text(snapshot.data!.sliders![index].image
-                            //         .toString()));
-                          });
-                    } else {
-                      return LinearProgressIndicator();
-                    }
-                  }),
+              whitespace(context, 2, 0),
 
-              whitespace(context, 1.1, 0),
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
                 child: Row(
@@ -106,30 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-              // whitespace(context, 2, 0),
-              // SizedBox(
-              //   height: size.height * 15,
-              //   child: ListView.builder(
-              //       itemCount: 4,
-              //       scrollDirection: Axis.horizontal,
-              //       itemBuilder: (context, index) {
-              //         return Container(
-              //           height: size.height * 10,
-              //           width: size.height * 10,
-              //           margin: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-              //           decoration: BoxDecoration(
-              //             borderRadius: BorderRadius.circular(10),
-              //             // color: Colors.black,
-              //           ),
-              //           child: const Center(
-              //             child: Text(
-              //               "Food",
-              //               style: TextStyle(color: Colors.black),
-              //             ),
-              //           ),
-              //         );
-              //       }),
-              // ),
+
               whitespace(context, 3, 0),
               Text(
                 "Categories",
@@ -140,65 +85,69 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               whitespace(context, 2.2, 0),
-              FutureBuilder<Categories>(
-                  future: getCategoryList(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return SizedBox(
-                        height: size.height * 20,
-                        child: ListView.builder(
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            itemCount: snapshot.data!.categories!.length,
-                            itemBuilder: (context, index) {
-                              return Column(
-                                children: [
-                                  Container(
-                                    height: size.height * 10,
-                                    width: size.height * 15,
-                                    margin: const EdgeInsets.all(3.5),
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                          image: NetworkImage(
-                                              "https://www.muglimart.com/" +
-                                                  snapshot.data!
-                                                      .categories![index].image
-                                                      .toString()),
-                                          fit: BoxFit.cover),
-                                      // borderRadius: BorderRadius.circular(50),
-                                      shape: BoxShape.circle,
-                                      // color: Colors.black,
-                                    ),
+
+              Obx(() {
+                if (categoriesController.categoriesList_.isNotEmpty) {
+                  var temp = categoriesController.categoriesList_;
+                  return SizedBox(
+                    height: size.height * 20,
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        itemCount: temp.length,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onTap: () {
+                              Get.to(() => CategoryProductsScreen(
+                                  categoryId: "${temp[index].id}"));
+                            },
+                            child: Column(
+                              children: [
+                                Container(
+                                  height: size.height * 10,
+                                  width: size.height * 15,
+                                  margin: const EdgeInsets.all(3.5),
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                        image: NetworkImage(
+                                            "https://www.muglimart.com/" +
+                                                temp[index].image.toString()),
+                                        fit: BoxFit.cover),
+                                    // borderRadius: BorderRadius.circular(50),
+                                    shape: BoxShape.circle,
+                                    // color: Colors.black,
                                   ),
-                                  Container(
-                                    width: size.width * 30,
-                                    child: Text(
-                                      snapshot.data!.categories![index].catname
-                                          .toString(),
-                                      softWrap: true,
-                                      // "TV & Home Appliances$index",
-                                      textAlign: TextAlign.center,
-                                      style: GoogleFonts.openSans(
-                                          textStyle: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                      )),
-                                    ),
+                                ),
+                                Container(
+                                  width: size.width * 30,
+                                  child: Text(
+                                    temp[index].catname.toString(),
+                                    softWrap: true,
+                                    // "TV & Home Appliances$index",
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.openSans(
+                                        textStyle: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                    )),
                                   ),
-                                ],
-                              );
-                            }),
-                      );
-                    } else {
-                      return Text("Loading.....");
-                    }
-                  }),
+                                ),
+                              ],
+                            ),
+                          );
+                        }),
+                  );
+                } else {
+                  return Text("Loading.....");
+                }
+              }),
+
               // whitespace(context, 2.2, 0),
 
               whitespace(context, 2.8, 0),
               Container(
                 // alignment: Alignment.center,
                 margin: const EdgeInsets.fromLTRB(0, 10, 10, 10),
-                height: size.height * 20,
+                // height: size.height * 20,
                 width: double.infinity,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
@@ -209,7 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Image(
                     image: NetworkImage(
                         "https://www.muglimart.com/public/uploads/banner/1639484431-ezgif.com-gif-maker%20(4).gif"),
-                    fit: BoxFit.fill,
+                    // fit: BoxFit.fill,
                   ),
                 ),
               ),
@@ -223,74 +172,42 @@ class _HomeScreenState extends State<HomeScreen> {
                     fontStyle: FontStyle.italic),
               ),
               whitespace(context, 2, 0),
-              // SizedBox(
-              //   height: size.height * 50,
-              //   child: ListView.builder(
-              //       itemCount: 10,
-              //       scrollDirection: Axis.vertical,
-              //       itemBuilder: (context, index) {
-              //         return Container(
-              //           height: size.height * 22,
-              //           width: size.height * 15,
-              //           margin: const EdgeInsets.all(3.5),
-              //           decoration: BoxDecoration(
-              //               borderRadius: BorderRadius.circular(20),
-              //               color: Colors.black54),
-              //           child: Center(
-              //             child: Text(
-              //               "Product $index",
-              //               style: const TextStyle(color: Colors.white),
-              //             ),
-              //           ),
+              RecommendedProductsWidget(
+                size: size,
+              ),
+              // FutureBuilder<RecommendedProductsModel>(
+              //     future: getRecommended(),
+              //     builder: (context, snapshot) {
+              //       if (snapshot.hasData) {
+              //         return SizedBox(
+              //           height: size.height * 75,
+              //           child: GridView.builder(
+              //               gridDelegate:
+              //                   SliverGridDelegateWithFixedCrossAxisCount(
+              //                 crossAxisCount: 2,
+              //                 // mainAxisSpacing: 5,
+              //                 // crossAxisSpacing: 5,
+              //                 childAspectRatio:
+              //                     (size.width * 1.1) / (size.height / 1.19),
+              //               ),
+              //               itemCount: snapshot.data!.products!.length,
+              //               itemBuilder: (context, index) => anotherItemCard(
+              //                   size,
+              //                   snapshot.data!.products![index].proImage?.image,
+              //                   snapshot.data!.products![index].productname
+              //                       .toString(),
+              //                   snapshot.data!.products![index].productnewprice
+              //                       .toString(),
+              //                   snapshot.data!.products![index].productoldprice
+              //                       .toString(),
+              //                   snapshot.data!.products![index].productdiscount,
+              //                   snapshot.data!.products![index].id.toString(),
+              //                   context)),
               //         );
-              //       }),
-              // ),
-              // SizedBox(
-              //   height: size.height * 71,
-              //   child: GridView.builder(
-              //       gridDelegate:
-              //           const SliverGridDelegateWithFixedCrossAxisCount(
-              //         crossAxisCount: 2,
-              //         // mainAxisSpacing: 5,
-              //         // crossAxisSpacing: 5,
-              //         childAspectRatio: 0.77,
-              //       ),
-              //       itemBuilder: (context, index) => anotheritemcard(size)),
-              // ),
-              FutureBuilder<RecommendedProductsModel>(
-                  future: getRecommended(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return SizedBox(
-                        height: size.height * 71,
-                        child: GridView.builder(
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              // mainAxisSpacing: 5,
-                              // crossAxisSpacing: 5,
-                              childAspectRatio: 0.77,
-                            ),
-                            itemCount: snapshot.data!.products!.length,
-                            itemBuilder: (context, index) => anotheritemcard(
-                                size,
-                                "https://www.muglimart.com/" +
-                                    snapshot
-                                        .data!.products![index].proImage!.image
-                                        .toString(),
-                                snapshot.data!.products![index].productname
-                                    .toString(),
-                                snapshot.data!.products![index].productnewprice
-                                    .toString(),
-                                snapshot.data!.products![index].productoldprice
-                                    .toString(),
-                                snapshot.data!.products![index].productdiscount,
-                                snapshot.data!.products![index].id.toString())),
-                      );
-                    } else {
-                      return Text("Loading.....");
-                    }
-                  }),
+              //       } else {
+              //         return Text("Loading.....");
+              //       }
+              //     }),
             ],
           ),
         ),
@@ -331,93 +248,6 @@ class _HomeScreenState extends State<HomeScreen> {
     } else {
       return RecommendedProductsModel.fromJson(data);
     }
-  }
-
-  Widget anotheritemcard(var size, String url, String productname, String price,
-      String oldprice, int? discount, String idno) {
-    return GestureDetector(
-      onTap: () {
-        // Get.to(ProductDetailsScreen(id: idno));
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => ProductDetailsScreen(
-                    id: idno,
-                  )),
-        );
-      },
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Stack(
-              children: [
-                Container(
-                  // padding: const EdgeInsets.all(3),
-                  color: Colors.white,
-                  width: double.infinity,
-                  height: size.height * 26,
-                  child: Image.network(
-                    url,
-                    // fit: BoxFit.cover,
-                  ),
-                ),
-                discount != null
-                    ? Positioned.fill(
-                        child: Align(
-                        alignment: Alignment.topLeft,
-                        child: Container(
-                          height: 20,
-                          width: 45,
-                          decoration: BoxDecoration(
-                              color: LogoColor,
-                              borderRadius: BorderRadius.circular(20)),
-                          child: Text(
-                            "$discount %",
-                            textAlign: TextAlign.center,
-                            style: GoogleFonts.openSans(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ))
-                    : Container(),
-              ],
-            ),
-            whitespace(context, 2, 0),
-            Text(
-              productname,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            // Text(price),
-            RichText(
-                text: TextSpan(children: <TextSpan>[
-              TextSpan(
-                  text: oldprice,
-                  style: GoogleFonts.openSans(
-                    decoration: TextDecoration.lineThrough,
-                    fontSize: 11,
-                    color: Colors.grey.shade700,
-                  )),
-              TextSpan(text: "   "),
-              TextSpan(
-                  text: "$price ৳",
-                  style: GoogleFonts.openSans(
-                    // fontSize: 10,
-                    color: Colors.black,
-                    fontWeight: FontWeight.w500,
-                  )),
-            ])),
-          ],
-        ),
-      ),
-    );
   }
 
   Future<Categories> getCategoryList() async {

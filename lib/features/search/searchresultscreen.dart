@@ -1,6 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:ionicons/ionicons.dart';
+import 'package:muglimart_quicktech/config/config.dart';
 import 'package:muglimart_quicktech/features/search/SeacrhResultModel.dart';
 import 'package:muglimart_quicktech/features/product_details/productdetailsscreen.dart';
 import 'package:muglimart_quicktech/Widgets/afewwidgets.dart';
@@ -28,32 +31,59 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
               future: getSearchResult(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  return ListView(
-                    shrinkWrap: true,
-                    children: [
-                      GestureDetector(
-                        child: ListTile(
-                          title: Text(snapshot
-                              .data!.products!.data![0].productname
-                              .toString()),
-                          subtitle: Text(snapshot
-                              .data!.products!.data![0].productnewprice
-                              .toString()),
-                          // leading: Image(image: NetworkImage(snapshot.data!.products!.data![0].productname.toString())),
-                        ),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ProductDetailsScreen(
-                                      id: snapshot.data!.products!.data![0].id
-                                          .toString(),
-                                    )),
+                  if (snapshot.data!.products!.data!.length != 0) {
+                    return ListView.builder(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.vertical,
+                        itemCount: snapshot.data?.products!.data!.length,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            child: ListTile(
+                              //  leading: Image(
+                              // image: NetworkImage(
+                              //     "$baseUrl${snapshot.data.products}")),
+                              title: Text(snapshot
+                                  .data!.products!.data![0].productname
+                                  .toString()),
+                              subtitle: Text(
+                                  "${snapshot.data!.products!.data![0].productnewprice.toString()} tk"),
+                              // leading: Image(image: NetworkImage(snapshot.data!.products!.data![0].productname.toString())),
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ProductDetailsScreen(
+                                          id: snapshot
+                                              .data!.products!.data![0].id
+                                              .toString(),
+                                        )),
+                              );
+                            },
                           );
-                        },
-                      )
-                    ],
-                  );
+                        });
+                  } else {
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.search_off,
+                          size: 50,
+                        ),
+                        whitespace(context, 2, 0),
+                        SizedBox(
+                          width: double.infinity,
+                          child: Center(
+                            child: Text(
+                              "${widget.searchkey} is not found",
+                              style: GoogleFonts.openSans(),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  }
                 } else {
                   return Center(
                     child: CircularProgressIndicator(),
@@ -66,11 +96,14 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
   }
 
   Future<SearchResultModel> getSearchResult() async {
+    print(
+        "This is search key - getSearchResult function - ${widget.searchkey}");
     final response = await http.post(
         Uri.parse('https://muglimart.com/api/v1/search/product'),
-        body: {'category': "1", 'keyword': widget.searchkey});
+        body: {'category': "all", 'keyword': widget.searchkey});
 
     var data = jsonDecode(response.body.toString());
+    print(response.body);
 
     if (response.statusCode == 200) {
       return SearchResultModel.fromJson(data);

@@ -1,3 +1,4 @@
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -33,10 +34,12 @@ class AnotherSqlHelper {
       "productimage": productimage
     };
     try {
+      Fluttertoast.showToast(msg: "Product added to wishlist");
       return await myDatabase!.insert(tablename, dataMap);
     } catch (e) {
       print(e.toString());
       print("Already Exists ");
+      Fluttertoast.showToast(msg: "Product already added in wishlist before");
       return 3;
     }
   }

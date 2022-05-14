@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:muglimart_quicktech/Widgets/check_log_in.dart';
 import 'package:muglimart_quicktech/features/category/categoriesscreen.dart';
 import 'package:muglimart_quicktech/features/edit_profile/editprofilescreen.dart';
 import 'package:muglimart_quicktech/features/home/homescreen.dart';
+import 'package:muglimart_quicktech/features/logout/logout.dart';
 import 'package:muglimart_quicktech/features/profile/profilescreen.dart';
 import 'package:muglimart_quicktech/Utilities/colors.dart';
+import 'package:muglimart_quicktech/functions/get_saved_values.dart';
 
 int? selectedindex;
 
@@ -84,7 +88,11 @@ Widget whitespace(BuildContext context, var thisheight, var thiswidth) {
 }
 
 AppBar myappbar(BuildContext context, var size, Color backgroundcolor) {
+  final checkToken = GetStorage();
+  var token;
+  token = checkToken.read('token');
   return AppBar(
+    automaticallyImplyLeading: false,
     actions: [
       Padding(
           padding: EdgeInsets.only(
@@ -116,24 +124,37 @@ AppBar myappbar(BuildContext context, var size, Color backgroundcolor) {
                           title: const Text("Profile"),
                           leading: const Icon(Icons.photo),
                           onTap: () {
-                            Navigator.pushNamed(context, 'ProfileScreen');
+                            // Navigator.pushNamed(context, 'ProfileScreen');
+                            CheckLogIn().checkLogIn(
+                                function: () {
+                                  Get.to(() => ProfileScreen());
+                                },
+                                context: context);
                           },
                         ),
-                        ListTile(
-                          title: const Text("Change Details"),
-                          leading: const Icon(Icons.settings),
-                          onTap: () {
-                            Navigator.pushNamed(context, 'EditProfileScreen');
-                          },
-                        ),
-                        ListTile(
-                          title: const Text("Logout"),
-                          leading: const Icon(Icons.logout_sharp),
-                          onTap: () {
-                            Navigator.pushNamed(
-                                context, 'UnderConstructionScreen');
-                          },
-                        ),
+                        // ListTile(
+                        //   title: const Text("Change Details"),
+                        //   leading: const Icon(Icons.settings),
+                        //   onTap: () {
+                        //     CheckLogIn().checkLogIn(
+                        //         function: () {
+                        //           Get.to(() => EditProfileScreen(
+                        //               id: GetSavedValues().getId()));
+                        //         },
+                        //         context: context);
+                        //   },
+                        // ),
+                        token == null
+                            ? Container()
+                            : ListTile(
+                                title: const Text("Logout"),
+                                leading: const Icon(Icons.logout_sharp),
+                                onTap: () {
+                                  // Navigator.pushNamed(
+                                  //     context, 'UnderConstructionScreen');
+                                  LogOut().logOut();
+                                },
+                              ),
                       ],
                     ),
                   ]);
@@ -147,20 +168,17 @@ AppBar myappbar(BuildContext context, var size, Color backgroundcolor) {
             ),
           )),
     ],
-    title: Text(
-      "Mugli Mart",
-      style: GoogleFonts.barlow(
-        textStyle:
-            const TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
-      ),
+    title: Image.asset(
+      "assets/images/banner.png",
+      width: 50,
     ),
-    leading: GestureDetector(
-      child: Icon(
-        Icons.arrow_back,
-        color: Colors.black,
-      ),
-      onTap: () => Navigator.pop(context),
-    ),
+    // Text(
+    //   "Mugli Mart",
+    //   style: GoogleFonts.barlow(
+    //     textStyle:
+    //         const TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
+    //   ),
+    // ),
     backgroundColor: backgroundcolor,
     elevation: 0.55,
   );
@@ -202,13 +220,15 @@ AppBar blackappbar(BuildContext context, var size) {
                             Get.to(ProfileScreen());
                           },
                         ),
-                        ListTile(
-                          title: Text("Change Details"),
-                          leading: Icon(Icons.settings),
-                          onTap: () {
-                            Get.to(EditProfileScreen());
-                          },
-                        ),
+                        // ListTile(
+                        //   title: Text("Change Details"),
+                        //   leading: Icon(Icons.settings),
+                        //   onTap: () {
+                        //     Get.to(EditProfileScreen(
+                        //       id: int.parse("${GetSavedValues().getToken()}"),
+                        //     ));
+                        //   },
+                        // ),
                         ListTile(
                           title: Text("Logout"),
                           leading: Icon(Icons.logout_sharp),

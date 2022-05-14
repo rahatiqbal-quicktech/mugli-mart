@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:muglimart_quicktech/all_controllers/allControllers.dart';
+import 'package:muglimart_quicktech/features/category_products/category_products_screen.dart';
+import 'package:muglimart_quicktech/features/order_details/order_details_screen.dart';
+import 'package:muglimart_quicktech/features/splash_screen/splash_screen.dart';
 import 'package:muglimart_quicktech/sqflite/AnotherSqlHelper.dart';
 import 'package:muglimart_quicktech/sqflite/CartSqlHelper.dart';
 import 'package:muglimart_quicktech/features/track_order/TrackOrderScreen.dart';
@@ -15,7 +19,7 @@ import 'package:muglimart_quicktech/features/auth/loginscreen.dart';
 import 'package:muglimart_quicktech/features/profile/profilescreen.dart';
 import 'package:muglimart_quicktech/features/search/searchscreen.dart';
 import 'package:muglimart_quicktech/features/auth/signupscreen.dart';
-import 'package:muglimart_quicktech/underconstructionscreen.dart';
+import 'package:muglimart_quicktech/features/under_construction/underconstructionscreen.dart';
 import 'package:muglimart_quicktech/features/wish_list/wishlistscreen.dart';
 import 'package:muglimart_quicktech/boilerplates/recommended_demo.dart';
 import 'package:muglimart_quicktech/boilerplates/showwishlistsqfliteboilerplate.dart';
@@ -40,14 +44,17 @@ void main() async {
   // Hive.registerAdapter(WishListAdapter());
   // await Hive.openBox<WishList>('WishListBox');
   await GetStorage.init();
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class MyApp extends StatelessWidget with AllControllers {
+  MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    categoriesController.fetchCategories();
+    sliderController.getSliders();
+    recommendedProductsController.getRecommendedProducts();
     return GetMaterialApp(
       // initialRoute: 'LoginScreen',
       routes: {
@@ -62,10 +69,10 @@ class MyApp extends StatelessWidget {
         'ProfileScreen': (context) => const ProfileScreen(),
         'CampaignScreen': (context) => const CampaignScreen(),
         'UnderConstructionScreen': (context) => const UnderConstructionScreen(),
-        'SearchScreen': (context) => const SearchScreen(),
+        'SearchScreen': (context) => SearchScreen(),
         'Demo': (context) => const Demo(),
         'recommended_demo': (context) => recommended_demo(),
-        'EditProfileScreen': (context) => EditProfileScreen(),
+        // 'EditProfileScreen': (context) => EditProfileScreen(),
         'TrackOrderScreen': (context) => TrackOrderScreen(),
         'ShippingAdressScreen': (context) => ShippingAdressScreen(),
         'ChangeAddressScreen': (context) => ChangeAddressScreen(),
@@ -73,11 +80,12 @@ class MyApp extends StatelessWidget {
         'ShowWishlistBoilerplate': (context) => ShowWishlistBoilerplate(),
       },
       debugShowCheckedModeBanner: false,
+      smartManagement: SmartManagement.onlyBuilder,
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomeScreen(),
+      home: SplashScreen(),
     );
   }
 }

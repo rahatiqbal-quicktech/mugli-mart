@@ -25,8 +25,8 @@ class _TheBottomNavBarState extends State<TheBottomNavBar> {
             MaterialPageRoute(builder: (context) => const HomeScreen()));
         break;
       case 1:
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const SearchScreen()));
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => SearchScreen()));
         break;
       case 2:
         Navigator.push(context,

@@ -17,6 +17,8 @@ import 'package:muglimart_quicktech/Widgets/thebottomnavbar.dart';
 import 'package:http/http.dart' as http;
 import 'package:muglimart_quicktech/main.dart';
 
+import 'widgets/add_product_dialogue.dart';
+
 class ProductDetailsScreen extends StatefulWidget {
   String id;
   // const ProductDetailsScreen({required this.id, Key? key}) : super(key: key);
@@ -93,15 +95,28 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     }
   }
 
-  addToCart(
-      {required String sentid,
-      required String sentproductname,
-      required double sentproductprice,
-      required String sentproductimage}) async {
-    String fullimageurl = "https://muglimart.com/" + sentproductimage;
+  addToCart({
+    required String? sentid,
+    required String? sentproductname,
+    int? sentSellerId,
+    required int? sentproductprice,
+    int? sentQuantity,
+    String? sentProductSize,
+    String? sentProductColor,
+    required String? sentproductimage,
+  }) async {
+    String fullimageurl = "https://muglimart.com/" + sentproductimage!;
+    print(sentSellerId);
     try {
       int a = await cartSql.addProduct(
-          sentid, sentproductname, sentproductprice, fullimageurl);
+          id: sentid,
+          productname: sentproductname,
+          sellerId: sentSellerId,
+          productPrice: sentproductprice,
+          productSize: sentProductSize,
+          productColor: sentProductColor,
+          quantitiy: sentQuantity,
+          productimage: fullimageurl);
 
       if (a == 1) {
         print("Product Added To Cart ");
@@ -126,6 +141,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               future: GetDetails(widget.id),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
+                  var temp = snapshot.data;
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -232,27 +248,31 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               children: [
                                 OutlinedButton.icon(
                                     onPressed: () {
+                                      // addToCart(
+                                      //     sentid: temp!.productdetails!.id
+                                      //         .toString(),
+                                      //     sentproductname:
+                                      //         temp.productdetails!.productname,
+                                      //     sentSellerId: temp.sellerinfo!.id,
+                                      //     sentproductprice: temp
+                                      //         .productdetails!.productnewprice,
+                                      //     sentQuantity: 1,
+                                      //     sentProductSize: "Product Size",
+                                      //     sentProductColor: "Product Color",
+                                      //     sentproductimage: temp
+                                      //         .productdetails!.proImage!.image);
                                       showDialog(
                                           context: context,
-                                          builder: (context) {
-                                            return cartdialogue(
-                                                context,
-                                                size,
-                                                snapshot.data!.productdetails!
-                                                    .productname
-                                                    .toString(),
-                                                snapshot.data!.productdetails!
-                                                    .productnewprice!
-                                                    .toDouble(),
-                                                snapshot
-                                                    .data!.productdetails!.id
-                                                    .toString(),
-                                                imagelink(snapshot
-                                                    .data!
-                                                    .productdetails!
-                                                    .proImage!
-                                                    .image
-                                                    .toString()));
+                                          builder: (BuildContext context) {
+                                            return AddProductDialogue(
+                                                name:
+                                                    "${temp?.productdetails!.productname}",
+                                                image:
+                                                    "${temp?.productdetails!.proImage?.image}",
+                                                // price: int.parse(widget.saleprice),
+                                                price: temp?.productdetails!
+                                                    .productnewprice,
+                                                pid: widget.id);
                                           });
                                     },
                                     icon: Icon(Icons.shopping_bag_outlined),
@@ -314,30 +334,30 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             //   )),
                             // ),
                             whitespace(context, 5, 0),
-                            productdetailstexts(
-                                "Reviews", size, 3, FontWeight.w600),
-                            const Divider(),
-                            productdetailstexts(
-                                "300 Reviews", size, 2, FontWeight.normal),
-                            TextButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const ReviewsScreen()),
-                                  );
-                                },
-                                child: const Text("Read all reviews")),
-                            whitespace(context, 5, 0),
-                            productdetailstexts(
-                                "Ratings", size, 3, FontWeight.w600),
-                            const Divider(),
-                            productdetailstexts(
-                                "155 Ratings", size, 2, FontWeight.normal),
-                            TextButton(
-                                onPressed: () {},
-                                child: const Text("Check All Ratings")),
+                            // productdetailstexts(
+                            //     "Reviews", size, 3, FontWeight.w600),
+                            // const Divider(),
+                            // productdetailstexts(
+                            //     "300 Reviews", size, 2, FontWeight.normal),
+                            // TextButton(
+                            //     onPressed: () {
+                            //       Navigator.push(
+                            //         context,
+                            //         MaterialPageRoute(
+                            //             builder: (context) =>
+                            //                 const ReviewsScreen()),
+                            //       );
+                            //     },
+                            //     child: const Text("Read all reviews")),
+                            // whitespace(context, 5, 0),
+                            // productdetailstexts(
+                            //     "Ratings", size, 3, FontWeight.w600),
+                            // const Divider(),
+                            // productdetailstexts(
+                            //     "155 Ratings", size, 2, FontWeight.normal),
+                            // TextButton(
+                            //     onPressed: () {},
+                            //     child: const Text("Check All Ratings")),
                           ],
                         ),
                       )
@@ -380,13 +400,21 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     );
   }
 
-  Widget cartdialogue(BuildContext context, Size size, String productname,
-      double productprice, String productid, String imageurl) {
-    String fullurl = "https://muglimart.com/" + imageurl;
-    print(imageurl);
+  Widget cartdialogue(
+      {required BuildContext context,
+      Size? size,
+      String? productid,
+      String? productname,
+      int? sellerId,
+      int? productprice,
+      int? quantity,
+      String? productSize,
+      String? productColor,
+      String? imageurl}) {
+    print("this is from dialog  $imageurl");
     return Dialog(
       child: Container(
-        width: size.width * 88,
+        width: size!.width * 88,
         height: size.height * 35,
         padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
         child: Column(
@@ -394,7 +422,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           children: [
             whitespace(context, 2, 0),
             Text(
-              productname,
+              productname!,
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
               style: GoogleFonts.openSans(
@@ -463,7 +491,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       sentid: productid,
                       sentproductname: productname,
                       sentproductprice: productprice,
-                      sentproductimage: fullurl);
+                      sentproductimage: imageurl);
                 },
               ),
             ),
