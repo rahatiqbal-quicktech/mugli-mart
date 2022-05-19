@@ -388,6 +388,15 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
                                 label: Text("Edit")),
                           ),
                           whitespace(context, 2, 0),
+                          TextButton(
+                              onPressed: () {
+                                confirmorder_fresh(
+                                    address: "Test",
+                                    coupon: "test",
+                                    name: "test",
+                                    phoneNumber: "01779565300");
+                              },
+                              child: Text("Test")),
                           Align(
                             alignment: Alignment.center,
                             child: SizedBox(
@@ -412,7 +421,7 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
                                   // print(cartProductsList);
                                 },
                                 child: Text(
-                                  "Confirm Order",
+                                  "Proceed",
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 23),
                                 ),
@@ -508,20 +517,13 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
       http.Response response = await http
           .post(Uri.parse("https://muglimart.com/api/v1/customer/order/save"),
               body: jsonEncode({
-                "cart": [
-                  {
-                    "product_id": 889,
-                    "product_name": "smart robotic sweeper machine mop",
-                    "sellerid": 10,
-                    "product_price": 1499.0,
-                    "quantity": 1
-                  }
-                ],
-                "name": "$name",
-                "phone": "$phoneNumber",
-                "fulladdress": "$address",
-                "totalprice": "$confirmOrderTotal",
-                "shippingfee": "$shippingChargeInt",
+                "cart": cartProductsList,
+                "name": "name",
+                "phone": "01779565300",
+                "fulladdress": "address",
+                "totalprice": "100",
+                "shippingfee": "100",
+                "zipcode": "12345",
                 "discount": "50",
                 "additionalshipping": "50",
                 "couponcode": "mugilimartbijoy",

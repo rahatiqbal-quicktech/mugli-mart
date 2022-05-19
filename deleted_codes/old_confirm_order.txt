@@ -1,0 +1,151 @@
+Future confirmorder(
+      String number, String house, String fulladd, String coup) async {
+    Map data = {
+      'cart': [
+        {
+          'product_id': 1,
+          'product_name': "japani silk sharee - deep jam",
+          'sellerid': 1,
+          'product_price': 1199,
+          'quantity': 1,
+          'product_size': "XL",
+          'product_color': "Red"
+        },
+        {
+          'product_id': 2,
+          'product_name': "jhum tower sarees for women blue tanjin tisha",
+          'sellerid': 1,
+          'product_price': 1099,
+          'quantity': 1,
+          'product_size': "M",
+          'product_color': "White"
+        }
+      ],
+      'name': 'Md. Zadu Mia',
+      'phone': '01742892725',
+      'district': "1",
+      'area': "5",
+      'stateaddress': "Road, 4/a",
+      'houseaddress': "Mirpur, Dhaka",
+      'fulladdress': "Mirpur, Dhaka",
+      'zipcode': "1212",
+      'totalprice': "1550",
+      'shippingfee': "80",
+      'discount': "50",
+      'additionalshipping': "50",
+      'couponcode': "mugilimartbijoy",
+      'totalproductpoint': "20",
+      'usemypoint': "20",
+      'paymentType': "cod"
+    };
+    Map anotherdata = {
+      "cart": [
+        {
+          "product_id": 1,
+          "product_name": "japani silk sharee - deep jam",
+          "sellerid": 1,
+          "product_price": 1199,
+          "quantity": 1,
+          "product_size": "XL",
+          "product_color": "Red"
+        },
+        {
+          "product_id": 2,
+          "product_name": "jhum tower sarees for women blue tanjin tisha",
+          "sellerid": 1,
+          "product_price": 1099,
+          "quantity": 1,
+          "product_size": "M",
+          "product_color": "White"
+        }
+      ],
+      "name": "Md. Zadu Mia",
+      "phone": "01742892725",
+      "district": "1",
+      "area": "5",
+      "stateaddress": "Road, 4/a",
+      "houseaddress": "Mirpur, Dhaka",
+      "fulladdress": "Mirpur, Dhaka",
+      "zipcode": "1212",
+      "totalprice": "1550",
+      "shippingfee": "80",
+      "discount": "50",
+      "additionalshipping": "50",
+      "couponcode": "mugilimartbijoy",
+      "totalproductpoint": "20",
+      "usemypoint": "20",
+      "paymentType": "cod"
+    };
+    dynamic token =
+        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvbXVnbGltYXJ0LmNvbVwvYXBpXC92MVwvY3VzdG9tZXJcL2xvZ2luIiwiaWF0IjoxNjQ3OTUwMDcyLCJleHAiOjE2NDc5NTM2NzIsIm5iZiI6MTY0Nzk1MDA3MiwianRpIjoibFZDQ0FzYTRBQ1R2R0ExTCIsInN1YiI6NCwicHJ2IjoiOGI0MjJlNmY2NTc5MzJiOGFlYmNiMWJmMWUzNTZkZDc2YTM2NWJmMiJ9.-xykWl2iLTw84FfyBl6TQcuqg86ZcihXhGHmHAWB37A";
+    try {
+      http.Response response = await http.post(
+          Uri.parse("https://muglimart.com/api/v1/customer/order/save"),
+          body: jsonEncode(anotherdata),
+          //     {
+          //   'cart': [
+          //     {
+          //       'product_id': 1,
+          //       'product_name': "japani silk sharee - deep jam",
+          //       'sellerid': 1,
+          //       'product_price': 1199,
+          //       'quantity': 1,
+          //       'product_size': "XL",
+          //       'product_color': "Red"
+          //     },this i sthe processed data, add single cotation later
+          //     {
+          //       'product_id': 2,
+          //       'product_name': "jhum tower sarees for women blue tanjin tisha",
+          //       'sellerid': 1,
+          //       'product_price': 1099,
+          //       'quantity': 1,
+          //       'product_size': "M",
+          //       'product_color': "White"
+          //     }
+          //   ],
+          //   'name': "Rahat iqbal",
+          //   'phone': number,
+          //   'district': ' ',
+          //   'area': ' ',
+          //   'stateaddress': ' ',
+          //   'houseaddress': house,
+          //   'fulladdress': fulladd,
+          //   'zipcode': "1212",
+          //   'totalprice': "1550",
+          //   'shippingfee': "80",
+          //   'discount': "50",
+          //   'additionalshipping': "50",
+          //   'couponcode': coup,
+          //   'totalproductpoint': "20",
+          //   'usemypoint': "20",
+          //   'paymentType': "cod"
+          // },
+          headers: {
+            'Accept': "application/json",
+            'Authorization':
+                'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvbXVnbGltYXJ0LmNvbVwvYXBpXC92MVwvY3VzdG9tZXJcL2xvZ2luIiwiaWF0IjoxNjQwMjMxNzQ5LCJleHAiOjE2NDAyMzUzNDksIm5iZiI6MTY0MDIzMTc0OSwianRpIjoicm9DbFdaVEdaSG82QktHRiIsInN1YiI6NSwicHJ2IjoiOGI0MjJlNmY2NTc5MzJiOGFlYmNiMWJmMWUzNTZkZDc2YTM2NWJmMiJ9.sNiwdu0iWz12ojfQa3Opvgnw8NiXOvE5LxtFOb2KPR8',
+          });
+      log(response.body.toString());
+      print(response.statusCode);
+
+      var JsonData = json.decode(response.body);
+      log(response.toString());
+
+      ConfirmOrderModel confirmOrderModel =
+          ConfirmOrderModel.fromJson(JsonData);
+
+      if (confirmOrderModel.status == "success") {
+        log(response.toString());
+        print(confirmOrderModel.status.toString());
+        print(confirmOrderModel.order!.ordertrack.toString());
+
+        // Navigator.push(
+        //     context, MaterialPageRoute(builder: (context) => ProfileScreen()));
+      } else {
+        print(response.statusCode);
+        print("Not working ");
+      }
+    } catch (e) {
+      print(e);
+    }
+  }

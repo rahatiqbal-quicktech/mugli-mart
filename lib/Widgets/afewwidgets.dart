@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:muglimart_quicktech/Widgets/check_log_in.dart';
+import 'package:muglimart_quicktech/features/auth/loginscreen.dart';
+import 'package:muglimart_quicktech/features/auth/signupscreen.dart';
 import 'package:muglimart_quicktech/features/category/categoriesscreen.dart';
 import 'package:muglimart_quicktech/features/edit_profile/editprofilescreen.dart';
 import 'package:muglimart_quicktech/features/home/homescreen.dart';
@@ -120,18 +122,35 @@ AppBar myappbar(BuildContext context, var size, Color backgroundcolor) {
                             Get.to(CategoriesScreen());
                           },
                         ),
-                        ListTile(
-                          title: const Text("Profile"),
-                          leading: const Icon(Icons.photo),
-                          onTap: () {
-                            // Navigator.pushNamed(context, 'ProfileScreen');
-                            CheckLogIn().checkLogIn(
-                                function: () {
-                                  Get.to(() => ProfileScreen());
+                        token == null
+                            ? ListTile(
+                                title: const Text("Log In"),
+                                leading: const Icon(Icons.login_sharp),
+                                onTap: () {
+                                  Get.to(() => LoginScreen());
                                 },
-                                context: context);
-                          },
-                        ),
+                              )
+                            : ListTile(
+                                title: const Text("Profile"),
+                                leading: const Icon(Icons.photo),
+                                onTap: () {
+                                  // Navigator.pushNamed(context, 'ProfileScreen');
+                                  CheckLogIn().checkLogIn(
+                                      function: () {
+                                        Get.to(() => ProfileScreen());
+                                      },
+                                      context: context);
+                                },
+                              ),
+                        token == null
+                            ? ListTile(
+                                title: const Text("Create an account"),
+                                leading: const Icon(Icons.plus_one),
+                                onTap: () {
+                                  Get.to(() => SignUpScreen());
+                                },
+                              )
+                            : Container(),
                         // ListTile(
                         //   title: const Text("Change Details"),
                         //   leading: const Icon(Icons.settings),

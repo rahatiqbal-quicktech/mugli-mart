@@ -30,6 +30,13 @@ class _CampaignScreenState extends State<CampaignScreen> with AllControllers {
         });
   }
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    campaignsController.getCampaigns();
+  }
+
   // void initState() {
   //   getdata();
 
@@ -52,12 +59,12 @@ class _CampaignScreenState extends State<CampaignScreen> with AllControllers {
           child: Column(
             children: [
               Obx(() {
-                if (sliderController.sliders.length != 0) {
+                if (campaignsController.campaignsList.length != 0) {
                   return ListView.builder(
                       shrinkWrap: true,
-                      itemCount: sliderController.sliders.length,
+                      itemCount: campaignsController.campaignsList.length,
                       itemBuilder: (context, index) {
-                        final temp = sliderController.sliders[index];
+                        final temp = campaignsController.campaignsList[index];
                         return Container(
                           margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
                           // height: size.height * 20,

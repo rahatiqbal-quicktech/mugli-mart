@@ -171,7 +171,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     } catch (e) {
       LoadingDialog().dismiss();
       Fluttertoast.showToast(
-          msg: "An unknown error has occured while updating your profile");
+          msg:
+              "This phone number has already been taken. Try with a different one.");
       print(e);
     }
   }

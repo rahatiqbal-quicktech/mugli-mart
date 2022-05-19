@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:muglimart_quicktech/all_controllers/allControllers.dart';
-import 'package:muglimart_quicktech/features/category_products/category_products_screen.dart';
-import 'package:muglimart_quicktech/features/order_details/order_details_screen.dart';
+
 import 'package:muglimart_quicktech/features/splash_screen/splash_screen.dart';
 import 'package:muglimart_quicktech/sqflite/AnotherSqlHelper.dart';
 import 'package:muglimart_quicktech/sqflite/CartSqlHelper.dart';

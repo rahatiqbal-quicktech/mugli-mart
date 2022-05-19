@@ -1,18 +1,16 @@
 import 'dart:convert';
 
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:muglimart_quicktech/Utilities/colors.dart';
+import 'package:muglimart_quicktech/features/cart/cartscreen.dart';
 import 'package:muglimart_quicktech/features/product_details/ProductDetailsModel.dart';
-import 'package:muglimart_quicktech/Models/imageurl_forcarousel.dart';
-import 'package:muglimart_quicktech/features/reviews/reviewsscreen.dart';
-import 'package:muglimart_quicktech/Widgets/addtocartmodal.dart';
+
 import 'package:muglimart_quicktech/Widgets/afewwidgets.dart';
-import 'package:muglimart_quicktech/Widgets/buttons.dart';
-import 'package:muglimart_quicktech/Widgets/cartdialogue.dart';
+
 import 'package:muglimart_quicktech/Widgets/thebottomnavbar.dart';
 import 'package:http/http.dart' as http;
 import 'package:muglimart_quicktech/main.dart';
@@ -131,6 +129,13 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    print("This is product id ${widget.id}");
+  }
+
+  @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size / 100;
     return Scaffold(
@@ -150,15 +155,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           color: Colors.black,
                           height: size.height * 50,
                           width: double.infinity,
-                          child:
-                              // Center(
-                              //   child: Text(
-                              //     snapshot.data!.productdetails!.proImage!.image
-                              //         .toString(),
-                              //     style: TextStyle(color: Colors.white),
-                              //   ),
-                              // )
-                              Image.network(
+                          child: Image.network(
                             imagelink(snapshot
                                 .data!.productdetails!.proImage!.image
                                 .toString()),
@@ -248,6 +245,31 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               children: [
                                 OutlinedButton.icon(
                                     onPressed: () {
+                                      addToCart(
+                                          sentid: temp!.productdetails!.id
+                                              .toString(),
+                                          sentproductname:
+                                              temp.productdetails!.productname,
+                                          sentSellerId: temp.sellerinfo!.id,
+                                          sentproductprice: temp
+                                              .productdetails!.productnewprice,
+                                          sentQuantity: 1,
+                                          sentProductSize: "Product Size",
+                                          sentProductColor: "Product Color",
+                                          sentproductimage: temp
+                                              .productdetails!.proImage!.image);
+                                      Get.to(() => CartScreen());
+                                    },
+                                    icon: Icon(Icons.shopping_cart),
+                                    label: Text(
+                                      "Buy Now",
+                                    ),
+                                    style: OutlinedButton.styleFrom(
+                                      primary: redColor,
+                                      side: BorderSide(color: redColor),
+                                    )),
+                                OutlinedButton.icon(
+                                    onPressed: () {
                                       // addToCart(
                                       //     sentid: temp!.productdetails!.id
                                       //         .toString(),
@@ -292,38 +314,40 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 //   action: addtocartmodal(context),
                                 // ),
                                 // whitespace(context, 0, 2),
-                                OutlinedButton.icon(
-                                    onPressed: () {
-                                      print(snapshot
+
+                                IconButton(
+                                  onPressed: () {
+                                    addToWishlist(
+                                      sentid: snapshot.data!.productdetails!.id
+                                          .toString(),
+                                      sentproductname: snapshot
+                                          .data!.productdetails!.productname
+                                          .toString(),
+                                      sentproductprice: snapshot.data!
+                                          .productdetails!.productnewprice!
+                                          .toDouble(),
+                                      sentproductimage: snapshot
                                           .data!.productdetails!.proImage!.image
-                                          .toString());
-                                      addToWishlist(
-                                        sentid: snapshot
-                                            .data!.productdetails!.id
-                                            .toString(),
-                                        sentproductname: snapshot
-                                            .data!.productdetails!.productname
-                                            .toString(),
-                                        sentproductprice: snapshot.data!
-                                            .productdetails!.productnewprice!
-                                            .toDouble(),
-                                        sentproductimage: snapshot.data!
-                                            .productdetails!.proImage!.image
-                                            .toString(),
-                                      );
-                                    },
-                                    icon: Icon(Icons.favorite_border_rounded),
-                                    label: Text("Add to Wishlist"),
-                                    style: OutlinedButton.styleFrom(
-                                      primary: Colors.redAccent,
-                                      side: BorderSide(color: Colors.redAccent),
-                                    )),
+                                          .toString(),
+                                    );
+                                  },
+                                  icon: Icon(
+                                    Icons.favorite_border_rounded,
+                                    color: redColor,
+                                  ),
+                                  tooltip: "Add To Wish List",
+                                )
                               ],
                             ),
                             whitespace(context, 3.5, 0),
                             Html(
                                 data: snapshot
                                     .data!.productdetails!.productdetails
+                                    .toString()),
+                            Divider(),
+                            Html(
+                                data: snapshot
+                                    .data!.productdetails!.productdetails2
                                     .toString()),
                             // Text(
                             //   snapshot.data!.productdetails!.productdetails

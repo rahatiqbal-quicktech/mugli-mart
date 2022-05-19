@@ -44,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> with AllControllers {
 
   @override
   Widget build(BuildContext context) {
-    String baseUrl = "https://muglimart.com/";
+    // String baseUrl = "https://muglimart.com/";
     Size size = MediaQuery.of(context).size / 100;
     return Scaffold(
       appBar: myappbar(context, size, Colors.white),

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
@@ -36,10 +37,12 @@ class AuthtController {
         Get.offAll(() => HomeScreen());
       } else {
         LoadingDialog().dismiss();
+        Fluttertoast.showToast(msg: "Invalid Credentials");
         print("Login Not Working");
       }
     } catch (e) {
       LoadingDialog().dismiss();
+      Fluttertoast.showToast(msg: "Invalid Credentials");
       print(e);
     }
   }

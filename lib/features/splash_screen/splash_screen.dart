@@ -18,6 +18,7 @@ class _SplashScreenState extends State<SplashScreen> with AllControllers {
     categoriesController.fetchCategories();
     recommendedProductsController.getRecommendedProducts();
     sliderController.getSliders();
+    campaignsController.getCampaigns();
     Timer(
         Duration(seconds: 5),
         () => Navigator.pushReplacement(

@@ -39,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
               alignment: Alignment.center,
               height: size.height * 40,
               width: double.infinity,
-              color: basiccolor,
+              color: Colors.grey.shade300,
               child: Container(
                 // margin: EdgeInsets.all(10),
                 height: size.height * 30,
@@ -47,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 // color: Colors.red,
                 child: Image.asset('assets/images/banner.png'),
               ),
-            ), //TODO for logo
+            ),
             SizedBox(
               height: size.height * 5,
             ),
@@ -61,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      "Phone or Email",
+                      "Phone Number",
                       style: TextStyle(
                         color: Colors.black.withOpacity(0.8),
                       ),
@@ -143,10 +143,25 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(
                       height: size.height * 5,
                     ),
-                    TextButton(
-                      style: ButtonStyle(
-                          padding:
-                              MaterialStateProperty.all(EdgeInsets.all(8.0))),
+                    // TextButton(
+                    //   style: ButtonStyle(
+                    //       padding:
+                    //           MaterialStateProperty.all(EdgeInsets.all(8.0))),
+                    //   onPressed: () {
+                    //     if (_formKey.currentState!.validate()) {
+                    //       LoadingDialog().show(context);
+                    //       printfunction();
+                    //       auth.login(phoneemailController.text,
+                    //           passwordController.text);
+                    //       // Navigator.pushNamed(context, 'HomeScreen');
+                    //     }
+                    //   },
+                    //   child: Text(
+                    //     "Sign In",
+                    //     style: TextStyle(color: basiccolor, fontSize: 20),
+                    //   ),
+                    // ),
+                    ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           LoadingDialog().show(context);
@@ -156,9 +171,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           // Navigator.pushNamed(context, 'HomeScreen');
                         }
                       },
-                      child: Text(
-                        "Sign In",
-                        style: TextStyle(color: basiccolor, fontSize: 20),
+                      child: Text("Log In"),
+                      style: ElevatedButton.styleFrom(
+                        elevation: 0.1,
+                        minimumSize: Size(double.infinity, 50),
+                        primary: redColor,
+                        shape: StadiumBorder(),
                       ),
                     ),
                     SizedBox(

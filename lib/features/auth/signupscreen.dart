@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:muglimart_quicktech/features/auth/loginscreen.dart';
 import 'package:http/http.dart' as http;
 import 'package:muglimart_quicktech/Utilities/colors.dart';
@@ -164,20 +165,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
               SizedBox(
                 height: size.height * 3.5,
               ),
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  style: ButtonStyle(
-                      padding: MaterialStateProperty.all(EdgeInsets.all(8.0))),
-                  onPressed: () {
-                    // Navigator.pushNamed(context, 'LoginScreen');
-                    signup(nameController.text, phoneemailController.text,
-                        passwordController.text);
-                  },
-                  child: Text(
-                    "Sign Up",
-                    style: TextStyle(color: basiccolor, fontSize: 23),
-                  ),
+              ElevatedButton(
+                onPressed: () {
+                  signup(nameController.text, phoneemailController.text,
+                      emailController.text, passwordController.text);
+                },
+                child: Text("Sign Up"),
+                style: ElevatedButton.styleFrom(
+                  elevation: 0.1,
+                  minimumSize: Size(double.infinity, 50),
+                  primary: greenColor,
+                  shape: StadiumBorder(),
                 ),
               ),
             ],
@@ -187,8 +185,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  signup(String name, String phone, String password) async {
-    var data = {"fullName": name, "phoneNumber": phone, "password": password};
+  signup(String name, String phone, String email, String password) async {
+    var data = {
+      "fullName": name,
+      "phoneNumber": phone,
+      "email": email,
+      "password": password
+    };
 
     try {
       http.Response response = await http.post(
@@ -201,6 +204,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
         print("This is jsondata ");
         print("JsonData   :   " + jsondata['status'].toString());
         if (jsondata['status'] == "success") {
+          Fluttertoast.showToast(
+              msg: "Your account has been successfully created");
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => LoginScreen()));
         }
