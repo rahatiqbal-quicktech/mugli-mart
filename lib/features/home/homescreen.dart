@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -103,21 +104,21 @@ class _HomeScreenState extends State<HomeScreen> with AllControllers {
                             },
                             child: Column(
                               children: [
-                                Container(
-                                  height: size.height * 10,
-                                  width: size.height * 15,
-                                  margin: const EdgeInsets.all(3.5),
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                        image: NetworkImage(
-                                            "https://www.muglimart.com/" +
-                                                temp[index].image.toString()),
-                                        fit: BoxFit.cover),
-                                    // borderRadius: BorderRadius.circular(50),
-                                    shape: BoxShape.circle,
-                                    // color: Colors.black,
-                                  ),
-                                ),
+                                // Container(
+                                //   height: size.height * 10,
+                                //   width: size.height * 15,
+                                //   margin: const EdgeInsets.all(3.5),
+                                //   decoration: BoxDecoration(
+                                //     image: DecorationImage(
+                                //         image: CachedNetworkImageProvider(
+                                //           "https://www.muglimart.com/${temp[index].image.toString()}",
+                                //         ),
+                                //         fit: BoxFit.cover),
+                                //     // borderRadius: BorderRadius.circular(50),
+                                //     shape: BoxShape.circle,
+                                //     // color: Colors.black,
+                                //   ),
+                                // ),
                                 Container(
                                   width: size.width * 30,
                                   child: Text(

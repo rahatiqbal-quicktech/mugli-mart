@@ -9,7 +9,7 @@ class AnotherCategoriesController extends GetxController {
   void fetchCategories() async {
     var temporary = await CategoriesService().getCategoryList();
     if (temporary != null) {
-      print(temporary.categories);
+      // print(temporary.categories);
       categoriesList_.value = temporary.categories as List<Category>;
     }
   }

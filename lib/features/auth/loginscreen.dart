@@ -165,7 +165,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           LoadingDialog().show(context);
-                          printfunction();
                           auth.login(phoneemailController.text,
                               passwordController.text);
                           // Navigator.pushNamed(context, 'HomeScreen');
@@ -235,9 +234,5 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (e) {
       print(e);
     }
-  }
-
-  void printfunction() {
-    print("abcde");
   }
 }

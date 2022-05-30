@@ -86,7 +86,8 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
           child: Form(
             key: _formKey,
             child: FutureBuilder<SgippingChargeModel>(
-                future: GetShippingAddressService().getData(),
+                future: GetShippingAddressService()
+                    .getData(id: authenticationToken),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     if (temp == true) {
@@ -479,8 +480,6 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
     });
     print("from fetchCartProducts - $cartProductsList");
   }
-
-  final ForToken = GetStorage();
 
   var name;
   var authenticationToken;

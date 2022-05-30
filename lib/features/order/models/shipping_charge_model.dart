@@ -55,7 +55,7 @@ class Charge {
   DateTime? updatedAt;
 
   factory Charge.fromJson(Map<String, dynamic> json) => Charge(
-        id: json["id"],
+        id: json["id"] ?? 197,
         districtId: json["district_id"],
         area: json["area"],
         shippingfee: json["shippingfee"],

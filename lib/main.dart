@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:muglimart_quicktech/all_controllers/allControllers.dart';
+import 'package:muglimart_quicktech/boilerplates/campaigns_boilerplate.dart';
+import 'package:muglimart_quicktech/features/campaign_products/campaign_products_screen.dart';
+import 'package:muglimart_quicktech/features/campaign_products/model/campaign_products_model.dart';
+import 'package:muglimart_quicktech/features/campaigns/AnotherCampaignModel.dart';
 
 import 'package:muglimart_quicktech/features/splash_screen/splash_screen.dart';
 import 'package:muglimart_quicktech/sqflite/AnotherSqlHelper.dart';
@@ -69,7 +73,7 @@ class MyApp extends StatelessWidget with AllControllers {
         'CampaignScreen': (context) => const CampaignScreen(),
         'UnderConstructionScreen': (context) => const UnderConstructionScreen(),
         'SearchScreen': (context) => SearchScreen(),
-        'Demo': (context) => const Demo(),
+        // 'Demo': (context) => const Demo(),
         'recommended_demo': (context) => recommended_demo(),
         // 'EditProfileScreen': (context) => EditProfileScreen(),
         'TrackOrderScreen': (context) => TrackOrderScreen(),
@@ -84,7 +88,7 @@ class MyApp extends StatelessWidget with AllControllers {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: SplashScreen(),
+      home: HomeScreen(),
     );
   }
 }

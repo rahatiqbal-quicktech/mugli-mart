@@ -6,15 +6,16 @@ class CampaignsService {
   String endpoint = "/api/v1/campaigns";
 
   Future<CampaignsModel?> fetchCampaigns() async {
-    print("campaigns checkpoint a");
     String fullUrl = baseUrl + endpoint;
     final dio = Dio();
     try {
-      var response = await dio.get(fullUrl);
+      var response = await dio.get("https://muglimart.com/api/v1/campaigns");
+      // return campaignsModelFromJson(response.data);
       if (response.statusCode == 200) {
-        print("campaigns checkpoint b");
-
-        return campaignsModelFromJson(response.data);
+        print("response data");
+        print(response.statusCode);
+        print(response.data);
+        return CampaignsModel.fromJson(response.data);
       } else
         return null;
     } catch (e) {

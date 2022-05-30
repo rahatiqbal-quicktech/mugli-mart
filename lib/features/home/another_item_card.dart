@@ -5,11 +5,12 @@ import 'package:muglimart_quicktech/Widgets/afewwidgets.dart';
 import 'package:muglimart_quicktech/features/product_details/productdetailsscreen.dart';
 
 Widget anotherItemCard(var size, String? url, String productname, String price,
-    String oldprice, int? discount, String idno, BuildContext context) {
-  String imageUrl;
+    String? oldprice, int? discount, String idno, BuildContext context) {
+  String imageUrl =
+      "https://cdn.pixabay.com/photo/2019/07/30/18/26/surface-4373559__480.jpg";
   if (url == null) {
     imageUrl =
-        "https://www.google.com/search?q=image+not+available&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjC-u2Tzej2AhVykNgFHVUsCGoQ_AUoAXoECAEQAw&biw=1440&bih=799&dpr=1#imgrc=QbT7tYTYgU6-lM";
+        "https://cdn.pixabay.com/photo/2019/07/30/18/26/surface-4373559__480.jpg";
   } else {
     imageUrl = "https://muglimart.com/" + url;
   }
@@ -78,7 +79,7 @@ Widget anotherItemCard(var size, String? url, String productname, String price,
           RichText(
               text: TextSpan(children: <TextSpan>[
             TextSpan(
-                text: oldprice,
+                text: oldprice ?? "",
                 style: GoogleFonts.openSans(
                   decoration: TextDecoration.lineThrough,
                   fontSize: 11,

@@ -18,9 +18,9 @@ class GetShippingAddressService {
   //   }
   // }
 
-  Future<SgippingChargeModel> getData() async {
+  Future<SgippingChargeModel> getData({required String id}) async {
     final response = await http.get(
-        Uri.parse('https://muglimart.com/api/customer/shippingcharge/195'));
+        Uri.parse('https://muglimart.com/api/customer/shippingcharge/$id'));
     var data = response.body;
     if (response.statusCode == 200) {
       return sgippingChargeModelFromJson(data);

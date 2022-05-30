@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -152,23 +153,33 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                          color: Colors.black,
-                          height: size.height * 50,
-                          width: double.infinity,
-                          child: Image.network(
-                            imagelink(snapshot
-                                .data!.productdetails!.proImage!.image
-                                .toString()),
-                            // fit: BoxFit.cover,
-                          )
-                          // CarouselSlider.builder(
-                          //     itemCount: imageUrls.length,
-                          //     itemBuilder: (context, index, realIndex) {
-                          //       final image_url = imageUrls[index];
-                          //       return buildimage(image_url, index);
-                          //     },
-                          //     options: CarouselOptions(height: double.infinity)),
-                          ),
+                        color: Colors.black,
+                        height: size.height * 50,
+                        width: double.infinity,
+                        child: CachedNetworkImage(
+                          imageUrl: imagelink(snapshot
+                              .data!.productdetails!.proImage!.image
+                              .toString()),
+                          placeholder: (context, url) =>
+                              CircularProgressIndicator(),
+                          errorWidget: (context, url, error) =>
+                              Icon(Icons.error),
+                        ),
+                      ),
+                      //   // Image.network(
+                      //   //   imagelink(snapshot
+                      //   //       .data!.productdetails!.proImage!.image
+                      //   //       .toString()),
+                      //   //   // fit: BoxFit.cover,
+                      //   // )
+                      //   // CarouselSlider.builder(
+                      //   //     itemCount: imageUrls.length,
+                      //   //     itemBuilder: (context, index, realIndex) {
+                      //   //       final image_url = imageUrls[index];
+                      //   //       return buildimage(image_url, index);
+                      //   //     },
+                      //   //     options: CarouselOptions(height: double.infinity)),
+                      // ),
                       whitespace(context, 2, 0),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(11.8, 0, 11.8, 0),
